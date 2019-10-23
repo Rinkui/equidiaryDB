@@ -1,24 +1,26 @@
-package Database;
+package equidiaryDB.Database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class DataBase {
     private final Connection connection;
 
-    public DataBase(String hostname, String port, String user, String password, String schema) throws SQLException {
-        if(hostname == null || port == null || user == null || password == null || schema == null){
+    public DataBase(Connection connection) {
+        this.connection = connection;
+    }
+
+    public static DataBase createDatabase(String hostname, String port, String user, String password, String schema) throws SQLException {
+        if (hostname == null || port == null || user == null || password == null || schema == null) {
             throw new IllegalArgumentException("One argument is missing");
         }
 
-        connection = DriverManager.getConnection("jdbc:mysql://" + hostname + ":" + port + "/" + schema + "?serverTimezone=UTC", user, password);
+        Connection connection = DriverManager.getConnection("jdbc:mysql://" + hostname + ":" + port + "/" + schema + "?serverTimezone=UTC", user, password);
+        return new DataBase(connection);
     }
 
     /**
      * The function check if the pair user/password is correct and return the userId.
+     *
      * @param username The username to check.
      * @param password The password to check.
      * @return The userId on database OR -1 if the user was not found OR -2 if we have multiple user.
@@ -27,18 +29,18 @@ public class DataBase {
     public int isCorrectUser(String username, String password) throws SQLException {
         int userId = -1;
 
-        String request =    "SELECT * " + 
-                            "FROM user " + 
-                            "WHERE name = ? " + 
-                            "AND password = ? ";
+        String request = "SELECT * " +
+                "FROM user " +
+                "WHERE name = ? " +
+                "AND password = ? ";
 
-        try (PreparedStatement statement = connection.prepareStatement(request)){
+        try (PreparedStatement statement = connection.prepareStatement(request)) {
             statement.setString(1, username);
             statement.setString(2, password);
             ResultSet result = statement.executeQuery();
-        
-            while(result.next()){
-                if(userId != -1){
+
+            while (result.next()) {
+                if (userId != -1) {
                     return -2;
                 }
                 userId = result.getInt("userId");
