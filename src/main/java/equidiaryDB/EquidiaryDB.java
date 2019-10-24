@@ -1,22 +1,27 @@
 package equidiaryDB;
 
-import equidiaryDB.Database.DataBase;
 import equidiaryDB.config.Config;
 import equidiaryDB.config.NullConfig;
+import equidiaryDB.database.DataBase;
 import equidiaryDB.services.LoginService;
 import io.javalin.Javalin;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
+import java.util.Properties;
 
 public class EquidiaryDB {
     private static final int EQUIDIARYDB_PORT = 7001;
+    private static final String CONFIG_PROPERTIES_PATH = "equidiaryDB.config/equidiaryDB.config.properties";
     private static Javalin app;
     public static DataBase db;
 
-    public static void start() throws IOException, SQLException {
-        Config config = Config.createConfig(Paths.get("config/config.properties"));
+    public static void start() throws Exception {
+        Path path = Paths.get(CONFIG_PROPERTIES_PATH);
+
+        Config config = loadConfig(path);
 
         if (config == NullConfig.INSTANCE) {
             System.err.println("One mandatry information is missing on configuration file given in argument.");
@@ -28,6 +33,13 @@ public class EquidiaryDB {
         app = Javalin.create().start(EQUIDIARYDB_PORT);
 
         createEndPoints();
+    }
+
+    private static Config loadConfig(Path path) throws IOException {
+        Properties properties = new Properties();
+        FileInputStream inStream = new FileInputStream(path.toFile());
+        properties.load(inStream);
+        return Config.createConfig(properties);
     }
 
     public static void stop() {

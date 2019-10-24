@@ -1,8 +1,5 @@
 package equidiaryDB.config;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Properties;
 
 import static equidiaryDB.config.ConfigProperty.*;
@@ -15,10 +12,7 @@ public class Config {
         this.properties = properties;
     }
 
-    public static Config createConfig(Path path) throws IOException {
-        Properties prop = new Properties();
-        prop.load(Files.newInputStream(path));
-
+    public static Config createConfig(Properties prop) {
         for (ConfigProperty configProperty : CONFIG_PROPERTIES) {
             if (mandatoryPropertyIsNotPresent(prop, configProperty)) {
                 return NullConfig.INSTANCE;

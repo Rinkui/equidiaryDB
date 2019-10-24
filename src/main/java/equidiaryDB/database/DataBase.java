@@ -1,11 +1,11 @@
-package equidiaryDB.Database;
+package equidiaryDB.database;
 
 import java.sql.*;
 
 public class DataBase {
     private final Connection connection;
 
-    public DataBase(Connection connection) {
+    private DataBase(Connection connection) {
         this.connection = connection;
     }
 
@@ -23,8 +23,8 @@ public class DataBase {
      *
      * @param username The username to check.
      * @param password The password to check.
-     * @return The userId on database OR -1 if the user was not found OR -2 if we have multiple user.
-     * @throws SQLException Throw the error which can be occur during the request to database.
+     * @return The userId on equidiaryDB.database OR -1 if the user was not found OR -2 if we have multiple user.
+     * @throws SQLException Throw the error which can be occur during the request to equidiaryDB.database.
      */
     public int isCorrectUser(String username, String password) throws SQLException {
         int userId = -1;
