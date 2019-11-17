@@ -14,7 +14,7 @@ import java.util.Properties;
 
 public class EquidiaryDB {
     private static final int EQUIDIARYDB_PORT = 7001;
-    private static final String CONFIG_PROPERTIES_PATH = "equidiaryDB.config/equidiaryDB.config.properties";
+    private static final String CONFIG_PROPERTIES_PATH = "config/config.properties";
     private static Javalin app;
     public static DataBase db;
 
