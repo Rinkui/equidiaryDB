@@ -1,5 +1,8 @@
 package equidiaryDB.config;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Properties;
 
 import static equidiaryDB.config.ConfigProperty.*;
@@ -12,7 +15,10 @@ public class Config {
         this.properties = properties;
     }
 
-    public static Config createConfig(Properties prop) {
+    public static Config createConfig(Path file) throws IOException {
+        FileReader fileReader = new FileReader(file.toFile());
+        Properties prop = new Properties();
+        prop.load(fileReader);
         for (ConfigProperty configProperty : CONFIG_PROPERTIES) {
             if (mandatoryPropertyIsNotPresent(prop, configProperty)) {
                 return NullConfig.INSTANCE;

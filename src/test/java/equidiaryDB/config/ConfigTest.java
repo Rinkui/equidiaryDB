@@ -1,45 +1,22 @@
 package equidiaryDB.config;
 
+import equidiaryDB.GenericTestCase;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Properties;
+import java.nio.file.Files;
 
-import static equidiaryDB.TestConstant.CONFIG_TEST;
+import static equidiaryDB.TestConstant.CONFIG_PROPERTIES;
 import static org.junit.Assert.assertEquals;
 
-@RunWith(Parameterized.class)
-public class ConfigTest {
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> params() {
-        return Arrays.asList(getObjects("hostDB"), getObjects("portDB"), getObjects("userDB"), getObjects("passwordDB"), getObjects("schemaDB"));
-    }
-
-    private static Object[] getObjects(String property) {
-        return new Object[]{property};
-    }
-
-    private String property;
-
-    public ConfigTest(String property) {
-        this.property = property;
-    }
+public class ConfigTest extends GenericTestCase {
 
     @Test
-    public void nullConfig() throws IOException {
-        Path file = Paths.get(CONFIG_TEST);
-        Properties properties = new Properties();
-        properties.load(new FileInputStream(file.toFile()));
-        properties.remove(property);
+    public void toto() throws IOException {
+        Files.deleteIfExists(CONFIG_PROPERTIES);
 
-        assertEquals(NullConfig.INSTANCE, Config.createConfig(properties));
+        Config config = Config.createConfig(CONFIG_PROPERTIES);
+
+        assertEquals(NullConfig.INSTANCE, config);
     }
 }

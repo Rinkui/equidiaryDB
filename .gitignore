@@ -7,3 +7,4 @@ build
 .classpath
 bin
 logs/*
+config/*

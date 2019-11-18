@@ -4,13 +4,14 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import equidiaryDB.EquidiaryDB;
+import equidiaryDB.GenericTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class LoginServiceTest {
+public class LoginServiceTest extends GenericTestCase {
     private static final String EQUIDIARYDB_PORT = "7001";
     private static final String EQUIDIARYDB_IP = "localhost";
     private static final String EQUIDIARYDB_PATH = "http://" + EQUIDIARYDB_IP + ":" + EQUIDIARYDB_PORT;

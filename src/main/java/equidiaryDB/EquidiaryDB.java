@@ -8,11 +8,8 @@ import io.javalin.Javalin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Properties;
 
 public class EquidiaryDB {
     private static final int EQUIDIARYDB_PORT = 7001;
@@ -24,7 +21,7 @@ public class EquidiaryDB {
     public static void start() throws Exception {
         Path path = Paths.get(CONFIG_PROPERTIES_PATH);
 
-        Config config = loadConfig(path);
+        Config config = Config.createConfig(path);
 
         if (config == NullConfig.INSTANCE) {
             logger.fatal("One mandatry information is missing on configuration file given in argument.");
@@ -36,13 +33,6 @@ public class EquidiaryDB {
         app = Javalin.create().start(EQUIDIARYDB_PORT);
 
         createEndPoints();
-    }
-
-    private static Config loadConfig(Path path) throws IOException {
-        Properties properties = new Properties();
-        FileInputStream inStream = new FileInputStream(path.toFile());
-        properties.load(inStream);
-        return Config.createConfig(properties);
     }
 
     public static void stop() {
