@@ -1,11 +1,28 @@
 plugins {
     id 'java'
+    id "nebula.ospackage" version "8.0.3"
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 group 'equidiaryDB'
-version '1.0-SNAPSHOT'
+version '0.1'
 
 sourceCompatibility = 1.8
+
+buildRpm {
+    packageName 'equidiaryDB'
+    version '0.1'
+    arch X86_64
+    os LINUX
+
+    into '/opt/equidiaryDB'
+
+    from(shadowJar.outputs.files)
+
+    from('config/config.properties') {
+        into 'config'
+    }
+}
 
 repositories {
     mavenCentral()
@@ -14,6 +31,7 @@ repositories {
 dependencies {
     compile 'io.javalin:javalin:3.5.0'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.12.1'
+    compile "org.slf4j:slf4j-simple:1.7.26"
     compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.18'
     compile group: 'org.json', name: 'json', version: '20190722'
