@@ -5,6 +5,8 @@ import equidiaryDB.config.NullConfig;
 import equidiaryDB.database.DataBase;
 import equidiaryDB.services.LoginService;
 import io.javalin.Javalin;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,6 +19,7 @@ public class EquidiaryDB {
     private static final String CONFIG_PROPERTIES_PATH = "config/config.properties";
     private static Javalin app;
     public static DataBase db;
+    public static final Logger logger = LogManager.getLogger();
 
     public static void start() throws Exception {
         Path path = Paths.get(CONFIG_PROPERTIES_PATH);
@@ -24,7 +27,7 @@ public class EquidiaryDB {
         Config config = loadConfig(path);
 
         if (config == NullConfig.INSTANCE) {
-            System.err.println("One mandatry information is missing on configuration file given in argument.");
+            logger.fatal("One mandatry information is missing on configuration file given in argument.");
             return;
         }
 
