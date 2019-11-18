@@ -34,7 +34,7 @@ public class ConfigMandatoryParams extends GenericTestCase {
     }
 
     private String property;
-    private Properties properties;
+    private Properties properties = new Properties();
 
     public ConfigMandatoryParams(String property) {
         this.property = property;
@@ -42,20 +42,15 @@ public class ConfigMandatoryParams extends GenericTestCase {
 
     @Before
     public void setUp() throws IOException {
-        Files.copy(Paths.get(CONFIG_TEST), CONFIG_PROPERTIES);
-        properties = new Properties();
-        FileInputStream inStream = new FileInputStream(CONFIG_PROPERTIES.toFile());
-        properties.load(inStream);
-        inStream.close();
+        Files.copy(CONFIG_TEST, CONFIG_PROPERTIES);
+        properties.load(new FileInputStream(CONFIG_PROPERTIES.toFile()));
         properties.remove(property);
-        FileWriter writer = new FileWriter(CONFIG_PROPERTIES.toFile());
-        properties.store(writer, null);
-        writer.close();
+        properties.store(new FileWriter(CONFIG_PROPERTIES.toFile()), null);
     }
 
     @After
     public void tearDown() throws IOException {
-        FileDeleteStrategy.FORCE.delete(CONFIG_PROPERTIES.toFile());
+        Files.deleteIfExists(CONFIG_PROPERTIES);
     }
 
     @Test

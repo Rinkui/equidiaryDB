@@ -24,7 +24,6 @@ public class EquidiaryDB {
         Config config = Config.createConfig(path);
 
         if (config == NullConfig.INSTANCE) {
-            logger.fatal("One mandatry information is missing on configuration file given in argument.");
             return;
         }
 

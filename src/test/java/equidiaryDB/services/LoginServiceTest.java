@@ -5,10 +5,14 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import equidiaryDB.EquidiaryDB;
 import equidiaryDB.GenericTestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import static equidiaryDB.TestConstant.*;
+import static equidiaryDB.TestConstant.CONFIG_PROPERTIES_BK;
 import static org.junit.Assert.assertEquals;
 
 public class LoginServiceTest extends GenericTestCase {
@@ -21,6 +25,8 @@ public class LoginServiceTest extends GenericTestCase {
 
     @Before
     public void setup() throws Exception {
+        Files.deleteIfExists(CONFIG_PROPERTIES);
+        Files.copy(CONFIG_TEST, CONFIG_PROPERTIES);
         EquidiaryDB.start();
     }
 
