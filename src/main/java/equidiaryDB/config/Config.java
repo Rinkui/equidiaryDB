@@ -6,71 +6,90 @@ import java.nio.file.Path;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import static equidiaryDB.EquidiaryDB.logger;
+import static equidiaryDB.EquidiaryDB.LOGGER;
 import static equidiaryDB.config.ConfigProperty.*;
 
-public class Config {
+public class Config
+{
     private final static ConfigProperty[] CONFIG_PROPERTIES = ConfigProperty.values();
-    private final Properties properties;
-    private static final Pattern PORT_REGEX = Pattern.compile("[0-9]{1,5}");
+    private final        Properties       properties;
+    private static final Pattern          PORT_REGEX        = Pattern.compile("[0-9]{1,5}");
 
-    Config(Properties properties) {
+    Config( Properties properties )
+    {
         this.properties = properties;
     }
 
-    public static Config createConfig(Path file) throws IOException {
-        if( !file.toFile().exists()){
-            logger.fatal("config.properties doesn't exists");
+    public static Config createConfig( Path file )
+    {
+        Properties properties = new Properties();
+        try
+        {
+            properties.load(new FileReader(file.toFile()));
+        }
+        catch (IOException e)
+        {
+            LOGGER.fatal("config.properties file doesn't exists");
             return NullConfig.INSTANCE;
         }
 
-        FileReader fileReader = new FileReader(file.toFile());
-        Properties properties = new Properties();
-        properties.load(fileReader);
+        Config config = new Config(properties);
 
-        for (ConfigProperty configProperty : CONFIG_PROPERTIES) {
-            if (mandatoryPropertyIsNotPresent(properties, configProperty)) {
-                logger.fatal(configProperty.getName() + " is a mandatory property.");
-                return NullConfig.INSTANCE;
+        if (!config.isValid())
+        {
+            return NullConfig.INSTANCE;
+        }
+
+        return config;
+    }
+
+    private boolean isValid()
+    {
+        for (ConfigProperty configProperty : CONFIG_PROPERTIES)
+        {
+            if (mandatoryPropertyIsNotPresent(properties, configProperty))
+            {
+                LOGGER.fatal(configProperty.getName() + " is a mandatory property.");
+                return false;
             }
         }
 
-        if ( propertyIsInvalid(properties) ){
-            return NullConfig.INSTANCE;
-        }
-
-        return new Config(properties);
+        return portDBIsValid();
     }
 
-    private static boolean propertyIsInvalid(Properties configProperty) {
-//        String name = configProperty.getName();
-//        if( name.equals("portDB") ){
-//            return !PORT_REGEX.matcher(name).matches();
-//        }
-        return false;
+    private boolean portDBIsValid()
+    {
+        return PORT_REGEX.matcher(getPortDB()).matches();
     }
 
-    private static boolean mandatoryPropertyIsNotPresent(Properties properties, ConfigProperty configProperty) {
+    private static boolean mandatoryPropertyIsNotPresent( Properties properties,
+                                                          ConfigProperty configProperty )
+    {
         return configProperty.isMandatory() && !properties.containsKey(configProperty.getName());
     }
 
-    public String getSchemaDB() {
+    public String getSchemaDB()
+    {
         return properties.getProperty(SCHEMA_DB.getName());
     }
 
-    public String getPasswordDB() {
+    public String getPasswordDB()
+    {
         return properties.getProperty(PASSWORD_DB.getName());
     }
 
-    public String getUserDB() {
+    public String getUserDB()
+    {
         return properties.getProperty(USER_DB.getName());
     }
 
-    public String getPortDB() {
+    public String getPortDB()
+    {
         return properties.getProperty(PORT_DB.getName());
     }
 
-    public String getHostDB() {
+    public String getHostDB()
+    {
         return properties.getProperty(HOST_DB.getName());
     }
 }

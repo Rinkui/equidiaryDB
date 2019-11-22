@@ -11,34 +11,46 @@ import org.apache.logging.log4j.Logger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class EquidiaryDB {
-    private static final int EQUIDIARYDB_PORT = 7001;
-    private static final String CONFIG_PROPERTIES_PATH = "config/config.properties";
-    private static Javalin app;
-    public static DataBase db;
-    public static final Logger logger = LogManager.getLogger();
+public class EquidiaryDB
+{
+    private static final int     EQUIDIARYDB_PORT       = 7001;
+    private static final Path    CONFIG_PROPERTIES_PATH = Paths.get("config/config.properties");
+    public static final  Logger  LOGGER                 = LogManager.getLogger();
+    private static       Javalin app;
 
-    public static void start() throws Exception {
-        Path path = Paths.get(CONFIG_PROPERTIES_PATH);
+    public static void start() throws Exception
+    {
+        Config config = Config.createConfig(CONFIG_PROPERTIES_PATH);
 
-        Config config = Config.createConfig(path);
-
-        if (config == NullConfig.INSTANCE) {
+        if (failedToLoadConfig(config))
+        {
+            LOGGER.fatal("Failed to start EquidiaryDB");
             return;
         }
 
-        db = DataBase.createDatabase(config.getHostDB(), config.getPortDB(), config.getUserDB(), config.getPasswordDB(), config.getSchemaDB());
+        DataBase.createDatabase(config.getHostDB(),
+                                config.getPortDB(),
+                                config.getUserDB(),
+                                config.getPasswordDB(),
+                                config.getSchemaDB());
 
         app = Javalin.create().start(EQUIDIARYDB_PORT);
 
         createEndPoints();
     }
 
-    public static void stop() {
+    private static boolean failedToLoadConfig( Config config )
+    {
+        return config == NullConfig.INSTANCE;
+    }
+
+    public static void stop()
+    {
         app.stop();
     }
 
-    private static void createEndPoints() {
+    private static void createEndPoints()
+    {
         app.get("/", ctx -> ctx.result("Hello World"));
         app.get("/users/:name", ctx -> ctx.result("Hello " + ctx.pathParam("name")));
         app.post("/login", LoginService::login);

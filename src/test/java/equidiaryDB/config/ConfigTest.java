@@ -1,6 +1,7 @@
 package equidiaryDB.config;
 
 import equidiaryDB.GenericTestCase;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ConfigTest extends GenericTestCase {
 
-    @Before
+    @After
     public void tearsDown() throws IOException {
         Files.deleteIfExists(CONFIG_PROPERTIES);
     }

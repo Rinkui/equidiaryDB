@@ -1,7 +1,6 @@
 package equidiaryDB.config;
 
 import equidiaryDB.GenericTestCase;
-import org.apache.commons.io.FileDeleteStrategy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,8 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
@@ -22,26 +20,38 @@ import static equidiaryDB.TestConstant.CONFIG_TEST;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
-public class ConfigMandatoryParams extends GenericTestCase {
+public class ConfigMandatoryParams extends GenericTestCase
+{
+
+    private static final Collection<Object[]> collection = new ArrayList<>();
+    private              String               property;
+    private              Properties           properties = new Properties();
 
     @Parameterized.Parameters
-    public static Collection<Object[]> params() {
-        return Arrays.asList(getObjects("hostDB"), getObjects("portDB"), getObjects("userDB"), getObjects("passwordDB"), getObjects("schemaDB"));
+    public static Collection<Object[]> params()
+    {
+        buildTest("hostDB");
+        buildTest("portDB");
+        buildTest("userDB");
+        buildTest("passwordDB");
+        buildTest("schemaDB");
+
+        return collection;
     }
 
-    private static Object[] getObjects(String property) {
-        return new Object[]{property};
+    private static void buildTest( String propertyName )
+    {
+        collection.add(new Object[] { propertyName });
     }
 
-    private String property;
-    private Properties properties = new Properties();
-
-    public ConfigMandatoryParams(String property) {
+    public ConfigMandatoryParams( String property )
+    {
         this.property = property;
     }
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws IOException
+    {
         Files.copy(CONFIG_TEST, CONFIG_PROPERTIES);
         properties.load(new FileInputStream(CONFIG_PROPERTIES.toFile()));
         properties.remove(property);
@@ -49,12 +59,14 @@ public class ConfigMandatoryParams extends GenericTestCase {
     }
 
     @After
-    public void tearDown() throws IOException {
+    public void tearDown() throws IOException
+    {
         Files.deleteIfExists(CONFIG_PROPERTIES);
     }
 
     @Test
-    public void nullConfig() throws IOException {
+    public void nullConfig()
+    {
         assertEquals(NullConfig.INSTANCE, Config.createConfig(CONFIG_PROPERTIES));
     }
 }
