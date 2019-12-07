@@ -4,12 +4,12 @@ import java.sql.*;
 
 public class DataBase
 {
-    private final  Connection connection;
+    private static Connection connectionDB;
     private static DataBase   db;
 
-    private DataBase( Connection connection )
+    private DataBase(  )
     {
-        this.connection = connection;
+
     }
 
     public static DataBase createDatabase( String hostname,
@@ -28,7 +28,8 @@ public class DataBase
                                                                 + schema
                                                                 + "?serverTimezone=UTC", user, password);
 
-            db = new DataBase(connection);
+            connectionDB = connection;
+            db = new DataBase();
         }
 
         return db;
@@ -42,14 +43,14 @@ public class DataBase
      * @return The userId on equidiaryDB.database OR -1 if the user was not found OR -2 if we have multiple user.
      * @throws SQLException Throw the error which can be occur during the request to equidiaryDB.database.
      */
-    public int isCorrectUser( String username,
+    public static int isCorrectUser( String username,
                               String password ) throws SQLException
     {
         int userId = -1;
 
         String request = "SELECT * FROM user WHERE name = ? AND password = ?";
 
-        try (PreparedStatement statement = connection.prepareStatement(request))
+        try (PreparedStatement statement = connectionDB.prepareStatement(request))
         {
             statement.setString(1, username);
             statement.setString(2, password);
