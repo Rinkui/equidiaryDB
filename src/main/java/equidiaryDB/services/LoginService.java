@@ -1,6 +1,6 @@
 package equidiaryDB.services;
 
-import equidiaryDB.EquidiaryDB;
+import equidiaryDB.database.DataBase;
 import io.javalin.http.Context;
 import org.json.JSONObject;
 
@@ -16,11 +16,14 @@ public class LoginService {
         String username = requestBody.getString(USERNAME);
         String password = requestBody.getString(PASSWORD);
 
-        int userId = EquidiaryDB.db.isCorrectUser(username, password);
+        int userId = DataBase.isCorrectUser(username, password);
 
-        if (isCorrectUser(userId)) {
+        if (isCorrectUser(userId))
+        {
             context.result("Hello " + username);
-        } else {
+        }
+        else
+        {
             context.result("Wrong username or password");
         }
     }

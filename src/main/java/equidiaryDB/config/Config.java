@@ -12,20 +12,22 @@ import static equidiaryDB.config.ConfigProperty.*;
 public class Config
 {
     private final static ConfigProperty[] CONFIG_PROPERTIES = ConfigProperty.values();
-    private final        Properties       properties;
-    private static final Pattern          PORT_REGEX        = Pattern.compile("[0-9]{1,5}");
+    private final Properties properties;
+    private static final Pattern PORT_REGEX = Pattern.compile("[0-9]{1,5}");
 
-    Config( Properties properties )
+    Config(Properties properties)
     {
         this.properties = properties;
     }
 
-    public static Config createConfig( Path file )
+    public static Config createConfig(Path file)
     {
         Properties properties = new Properties();
         try
         {
-            properties.load(new FileReader(file.toFile()));
+            FileReader reader = new FileReader(file.toFile());
+            properties.load(reader);
+            reader.close();
         }
         catch (IOException e)
         {
@@ -62,8 +64,8 @@ public class Config
         return PORT_REGEX.matcher(getPortDB()).matches();
     }
 
-    private static boolean mandatoryPropertyIsNotPresent( Properties properties,
-                                                          ConfigProperty configProperty )
+    private static boolean mandatoryPropertyIsNotPresent(Properties properties,
+                                                         ConfigProperty configProperty)
     {
         return configProperty.isMandatory() && !properties.containsKey(configProperty.getName());
     }

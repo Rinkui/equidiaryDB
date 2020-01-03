@@ -24,8 +24,8 @@ public class ConfigMandatoryParams extends GenericTestCase
 {
 
     private static final Collection<Object[]> collection = new ArrayList<>();
-    private              String               property;
-    private              Properties           properties = new Properties();
+    private String property;
+    private Properties properties = new Properties();
 
     @Parameterized.Parameters
     public static Collection<Object[]> params()
@@ -39,12 +39,12 @@ public class ConfigMandatoryParams extends GenericTestCase
         return collection;
     }
 
-    private static void buildTest( String propertyName )
+    private static void buildTest(String propertyName)
     {
-        collection.add(new Object[] { propertyName });
+        collection.add(new Object[]{propertyName});
     }
 
-    public ConfigMandatoryParams( String property )
+    public ConfigMandatoryParams(String property)
     {
         this.property = property;
     }
@@ -53,9 +53,15 @@ public class ConfigMandatoryParams extends GenericTestCase
     public void setUp() throws IOException
     {
         Files.copy(CONFIG_TEST, CONFIG_PROPERTIES);
-        properties.load(new FileInputStream(CONFIG_PROPERTIES.toFile()));
+        FileInputStream inStream = new FileInputStream(CONFIG_PROPERTIES.toFile());
+        FileWriter writer = new FileWriter(CONFIG_PROPERTIES.toFile());
+
+        properties.load(inStream);
         properties.remove(property);
-        properties.store(new FileWriter(CONFIG_PROPERTIES.toFile()), null);
+        properties.store(writer, null);
+
+        inStream.close();
+        writer.close();
     }
 
     @After

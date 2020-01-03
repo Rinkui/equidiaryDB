@@ -7,6 +7,7 @@ import equidiaryDB.EquidiaryDB;
 import equidiaryDB.GenericTestCase;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.nio.file.Files;
 
@@ -17,9 +18,9 @@ import static org.junit.Assert.assertEquals;
 public class LoginServiceTest extends GenericTestCase
 {
     private static final String EQUIDIARYDB_PORT = "7001";
-    private static final String EQUIDIARYDB_IP   = "localhost";
+    private static final String EQUIDIARYDB_IP = "localhost";
     private static final String EQUIDIARYDB_PATH = "http://" + EQUIDIARYDB_IP + ":" + EQUIDIARYDB_PORT;
-    private static final String LOGIN_ENDPOINT   = "/login";
+    private static final String LOGIN_ENDPOINT = "/login";
 
     private static HttpResponse<String> response;
 
@@ -39,41 +40,44 @@ public class LoginServiceTest extends GenericTestCase
     }
 
     @Test
-    public void loginNominal() throws Exception {
+    public void loginNominal() throws Exception
+    {
         String loginBody = givenUserWithPasswordBody("marie", "marie");
         whenLogin(loginBody);
         thenResponseIs("Hello marie");
     }
 
     @Test
-    public void loginWithNonExistingUsernameInDB() throws Exception {
+    public void loginWithNonExistingUsernameInDB() throws Exception
+    {
         String loginBody = givenUserWithPasswordBody("wrong", "marie");
         whenLogin(loginBody);
         thenResponseIs("Wrong username or password");
     }
 
     @Test
-    public void loginWithWrongPasswordInDB() throws Exception {
+    public void loginWithWrongPasswordInDB() throws Exception
+    {
         String loginBody = givenUserWithPasswordBody("wrong", "marie");
         whenLogin(loginBody);
         thenResponseIs("Wrong username or password");
     }
 
     // GIVEN
-    private String givenUserWithPasswordBody( final String userName,
-                                              final String password )
+    private String givenUserWithPasswordBody(final String userName,
+                                             final String password)
     {
         return "{\"username\":" + userName + ";\"password\":" + password + "}";
     }
 
     // WHEN
-    private void whenLogin( String loginBody ) throws UnirestException
+    private void whenLogin(String loginBody) throws UnirestException
     {
         response = Unirest.post(EQUIDIARYDB_PATH + LOGIN_ENDPOINT).body(loginBody).asString();
     }
 
     // THEN
-    private void thenResponseIs( String expected )
+    private void thenResponseIs(String expected)
     {
         assertEquals(expected, response.getBody());
     }
