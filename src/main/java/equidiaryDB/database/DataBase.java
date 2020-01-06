@@ -7,10 +7,7 @@ public class DataBase
     private static Connection connectionDB;
     private static DataBase   db;
 
-    private DataBase(  )
-    {
-
-    }
+    private DataBase(){}
 
     public static DataBase createDatabase( String hostname,
                                            String port,
