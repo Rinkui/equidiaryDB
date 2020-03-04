@@ -14,10 +14,10 @@ import java.nio.file.Paths;
 
 public class EquidiaryDB
 {
-    private static final int     EQUIDIARYDB_PORT       = 7001;
-    private static final Path    CONFIG_PROPERTIES_PATH = Paths.get("config/config.properties");
-    public static final  Logger  LOGGER                 = LogManager.getLogger();
-    private static       Javalin app;
+    private static final int EQUIDIARYDB_PORT = 7001;
+    private static final Path CONFIG_PROPERTIES_PATH = Paths.get("config/config.properties");
+    public static final Logger LOGGER = LogManager.getLogger();
+    private static Javalin app;
 
     public static void start() throws Exception
     {
@@ -29,38 +29,38 @@ public class EquidiaryDB
             return;
         }
 
-        applyDataBaseMigrations(config);
+//        applyDataBaseMigrations(config);
 
         DataBase.createDatabase(config.getHostDB(),
-                                config.getPortDB(),
-                                config.getUserDB(),
-                                config.getPasswordDB(),
-                                config.getSchemaDB());
+                config.getPortDB(),
+                config.getUserDB(),
+                config.getPasswordDB(),
+                config.getSchemaDB());
 
         app = Javalin.create().start(EQUIDIARYDB_PORT);
 
         createEndPoints();
     }
 
-    private static void applyDataBaseMigrations( Config config )
+    private static void applyDataBaseMigrations(Config config)
     {
         String url = "jdbc:mysql://"
-                     + config.getHostDB()
-                     + ":"
-                     + config.getPortDB()
-                     + "/"
-                     + config.getSchemaDB()
-                     + "?serverTimezone=UTC";
+                + config.getHostDB()
+                + ":"
+                + config.getPortDB()
+                + "/"
+                + config.getSchemaDB()
+                + "?serverTimezone=UTC";
 
         Flyway db_migration = Flyway.configure()
-                                    .locations("db_migration")
-                                    .dataSource(url, config.getUserDB(), config.getPasswordDB())
-                                    .load();
+                .locations("db_migration")
+                .dataSource(url, config.getUserDB(), config.getPasswordDB())
+                .load();
 
         db_migration.migrate();
     }
 
-    private static boolean failedToLoadConfig( Config config )
+    private static boolean failedToLoadConfig(Config config)
     {
         return config == NullConfig.INSTANCE;
     }
