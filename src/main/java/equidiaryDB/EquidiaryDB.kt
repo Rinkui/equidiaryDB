@@ -1,58 +1,57 @@
 package equidiaryDB
 
-import equidiaryDB.config.Config
-import equidiaryDB.config.Config.Companion.NULL_CONFIG
+import equidiaryDB.config.DBConfig
+import equidiaryDB.config.NULL_CONFIG
+import equidiaryDB.config.getDBConfig
 import equidiaryDB.database.DataBase
 import equidiaryDB.services.LoginService
 import io.javalin.Javalin
 import io.javalin.http.Context
 import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.flywaydb.core.Flyway
 import java.nio.file.Paths
 
 object EquidiaryDB {
     private const val EQUIDIARYDB_PORT = 7001
     private val CONFIG_PROPERTIES_PATH = Paths.get("config/config.properties")
-    val LOGGER = LogManager.getLogger()
     private lateinit var app: Javalin
+    val equiLogger: Logger = LogManager.getLogger()
     lateinit var db: DataBase
 
     @JvmStatic
-    @Throws(Exception::class)
     fun start() {
-        val config: Config = Config.createConfig(CONFIG_PROPERTIES_PATH)
+        val config = getDBConfig()
         if (failedToLoadConfig(config)) {
-            LOGGER.fatal("Failed to start EquidiaryDB")
+            equiLogger.fatal("Failed to start EquidiaryDB")
             return
         }
 
         //        applyDataBaseMigrations(config);
-        db = DataBase.createDatabase(config.hostDB, config.portDB, config.userDB, config.passwordDB, config.schemaDB)
+        db = DataBase.createDatabase(config.host, config.port, config.user, config.password, config.schema)
         app = Javalin.create().start(EQUIDIARYDB_PORT)
         createEndPoints()
     }
 
-    private fun applyDataBaseMigrations(config: Config) {
-        val url = "jdbc:mysql://" + config.hostDB + ":" + config.portDB + "/" + config.schemaDB + "?serverTimezone=UTC"
+    private fun applyDataBaseMigrations(config: DBConfig) {
+        val url = "jdbc:mysql://" + config.host + ":" + config.port + "/" + config.schema + "?serverTimezone=UTC"
         val db_migration =
-                Flyway.configure().locations("db_migration").dataSource(url, config.userDB, config.passwordDB).load()
+                Flyway.configure().locations("db_migration").dataSource(url, config.user, config.password).load()
         db_migration.migrate()
     }
 
-    private fun failedToLoadConfig(config: Config?): Boolean {
-        return config === NULL_CONFIG
-    }
+    private fun failedToLoadConfig(config: DBConfig?) = config === NULL_CONFIG
 
     @JvmStatic
     fun stop() {
-        app!!.stop()
+        app.stop()
     }
 
     private fun createEndPoints() {
-        app!!["/", { ctx: Context -> ctx.result("Hello World") }]
-        app!!["/users/:name", { ctx: Context ->
+        app["/", { ctx: Context -> ctx.result("Hello World") }]
+        app["/users/:name", { ctx: Context ->
             ctx.result("Hello " + ctx.pathParam("name"))
         }]
-        app!!.post("/login") { obj: Context? -> LoginService() }
+        app.post("/login", LoginService())
     }
 }

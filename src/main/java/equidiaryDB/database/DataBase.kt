@@ -7,11 +7,11 @@ import java.sql.SQLException
 class DataBase(private val connectionDB: Connection) {
 
     companion object {
-        fun createDatabase(hostname: String?,
-                           port: String?,
-                           user: String?,
-                           password: String?,
-                           schema: String?): DataBase {
+        fun createDatabase(hostname: String,
+                           port: Int,
+                           user: String,
+                           password: String,
+                           schema: String): DataBase {
 
             val connection = DriverManager.getConnection("jdbc:mysql://$hostname:$port/$schema?serverTimezone=UTC",
                                                          user,
