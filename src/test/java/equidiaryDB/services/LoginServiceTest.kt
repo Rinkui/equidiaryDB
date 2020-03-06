@@ -2,22 +2,17 @@ package equidiaryDB.services
 
 import com.mashape.unirest.http.HttpResponse
 import com.mashape.unirest.http.Unirest
-import com.mashape.unirest.http.exceptions.UnirestException
 import equidiaryDB.EquidiaryDB.start
 import equidiaryDB.EquidiaryDB.stop
 import equidiaryDB.GenericTestCase
-import equidiaryDB.TestConstant
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.nio.file.Files
 
 class LoginServiceTest : GenericTestCase() {
     @BeforeEach
     fun setup() {
-        Files.deleteIfExists(TestConstant.CONFIG_PROPERTIES)
-        Files.copy(TestConstant.CONFIG_TEST, TestConstant.CONFIG_PROPERTIES)
         start()
     }
 
@@ -55,7 +50,6 @@ class LoginServiceTest : GenericTestCase() {
     }
 
     // WHEN
-    @Throws(UnirestException::class)
     private fun whenLogin(loginBody: String) {
         response = Unirest.post(EQUIDIARYDB_PATH + LOGIN_ENDPOINT).body(loginBody).asString()
     }

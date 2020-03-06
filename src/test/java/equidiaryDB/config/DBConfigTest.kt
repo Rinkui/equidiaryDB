@@ -1,6 +1,5 @@
 package equidiaryDB.config
 
-import equidiaryDB.GenericTestCase
 import equidiaryDB.TestConstant.CONFIG_PROPERTIES
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
@@ -9,7 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import java.nio.file.Files
 
-class DBConfigTest : GenericTestCase() {
+class DBConfigTest {
     @AfterEach
     fun tearsDown() {
         Files.deleteIfExists(CONFIG_PROPERTIES)
@@ -39,7 +38,6 @@ class DBConfigTest : GenericTestCase() {
 
     // GIVEN
     private fun givenNoConfigFile() {
-        Files.deleteIfExists(CONFIG_PROPERTIES)
     }
 
     // WHEN
