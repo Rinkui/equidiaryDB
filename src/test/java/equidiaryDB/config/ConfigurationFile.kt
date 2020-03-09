@@ -5,11 +5,12 @@ import equidiaryDB.TestConstant.CONFIG_PROPERTIES
 object ConfigurationFile {
     val file = CONFIG_PROPERTIES.toFile()
 
-    private val defaultConfig = mapOf("hostDB" to "localhost",
-                                      "portDB" to "3306",
-                                      "userDB" to "equidiaryDB",
-                                      "passwordDB" to "xkrZsVjjpyBq4JHB",
-                                      "schemaDB" to "equidiary")
+    private val defaultConfig = mapOf(
+            "hostDB" to "localhost",
+            "portDB" to "5432",
+            "userDB" to "equidiaryDB",
+            "passwordDB" to "xkrZsVjjpyBq4JHB",
+            "schemaDB" to "equidiary")
 
     private var config = defaultConfig.toMutableMap()
 

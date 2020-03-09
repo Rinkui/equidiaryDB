@@ -4,20 +4,30 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
 
-class DataBase(private val connectionDB: Connection) {
+class DataBaseE(private val connectionDB: Connection) {
 
     companion object {
         fun createDatabase(hostname: String,
                            port: Int,
                            user: String,
                            password: String,
-                           schema: String): DataBase {
+                           schema: String): DataBaseE {
+//            val connect = Database.connect(
+//                    "jdbc:postgresql://localhost:12346/test",
+//                    driver = "org.postgresql.Driver",
+//                    user = user,
+//                    password = password
+//            )
+//
+//            transaction {
+//
+//            }
 
             val connection = DriverManager.getConnection("jdbc:mysql://$hostname:$port/$schema?serverTimezone=UTC",
-                                                         user,
-                                                         password)
+                    user,
+                    password)
 
-            return DataBase(connection)
+            return DataBaseE(connection)
         }
     }
 
@@ -47,8 +57,7 @@ class DataBase(private val connectionDB: Connection) {
                 }
                 return userId
             }
-        }
-        catch (e: SQLException) {
+        } catch (e: SQLException) {
             throw e
         }
     }

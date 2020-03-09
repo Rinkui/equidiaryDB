@@ -3,7 +3,7 @@ package equidiaryDB
 import equidiaryDB.config.DBConfig
 import equidiaryDB.config.NULL_CONFIG
 import equidiaryDB.config.getDBConfig
-import equidiaryDB.database.DataBase
+import equidiaryDB.database.DataBaseE
 import equidiaryDB.services.LoginService
 import io.javalin.Javalin
 import io.javalin.http.Context
@@ -17,7 +17,7 @@ object EquidiaryDB {
     private val CONFIG_PROPERTIES_PATH = Paths.get("config/config.properties")
     private lateinit var app: Javalin
     val equiLogger: Logger = LogManager.getLogger()
-    lateinit var db: DataBase
+    lateinit var db: DataBaseE
 
     @JvmStatic
     fun start() {
@@ -27,8 +27,8 @@ object EquidiaryDB {
             return
         }
 
-        //        applyDataBaseMigrations(config);
-        db = DataBase.createDatabase(config.host, config.port, config.user, config.password, config.schema)
+        applyDataBaseMigrations(config);
+        db = DataBaseE.createDatabase(config.host, config.port, config.user, config.password, config.schema)
         app = Javalin.create().start(EQUIDIARYDB_PORT)
         createEndPoints()
     }
