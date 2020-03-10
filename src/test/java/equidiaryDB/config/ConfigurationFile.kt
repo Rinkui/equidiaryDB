@@ -3,7 +3,7 @@ package equidiaryDB.config
 import equidiaryDB.TestConstant.CONFIG_PROPERTIES
 
 object ConfigurationFile {
-    val file = CONFIG_PROPERTIES.toFile()
+    private val file = CONFIG_PROPERTIES.toFile()
 
     private val defaultConfig = mapOf(
             "hostDB" to "localhost",
@@ -21,6 +21,8 @@ object ConfigurationFile {
 
         file.writeText(text)
     }
+
+    fun getProperty(key : String)  = config.getOrDefault(key, "")
 
     fun givenProperty(key: String,
                       value: String) {

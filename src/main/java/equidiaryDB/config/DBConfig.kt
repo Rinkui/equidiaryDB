@@ -27,10 +27,10 @@ fun getDBConfig(): DBConfig {
     return try {
         val config = ConfigurationProperties.fromFile(CONFIG_PROPERTIES_PATH.toFile())
         DBConfig(port = port(config),
-                 host = schema(config),
-                 user = password(config),
-                 password = user(config),
-                 schema = host(config))
+                 host = host(config),
+                 user = user(config),
+                 password = password(config),
+                 schema = schema(config))
     }
     catch (e: Exception) {
         equiLogger.warn("Unable to get server configuration from configuration file : ${e.message}")

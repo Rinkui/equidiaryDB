@@ -14,7 +14,6 @@ import java.nio.file.Paths
 
 object EquidiaryDB {
     private const val EQUIDIARYDB_PORT = 7001
-    private val CONFIG_PROPERTIES_PATH = Paths.get("config/config.properties")
     private lateinit var app: Javalin
     val equiLogger: Logger = LogManager.getLogger()
     lateinit var db: DataBaseE
@@ -27,17 +26,23 @@ object EquidiaryDB {
             return
         }
 
-        applyDataBaseMigrations(config);
+        applyDataBaseMigrations(config)
+
         db = DataBaseE.createDatabase(config.host, config.port, config.user, config.password, config.schema)
         app = Javalin.create().start(EQUIDIARYDB_PORT)
         createEndPoints()
     }
 
     private fun applyDataBaseMigrations(config: DBConfig) {
-        val url = "jdbc:mysql://" + config.host + ":" + config.port + "/" + config.schema + "?serverTimezone=UTC"
-        val db_migration =
-                Flyway.configure().locations("db_migration").dataSource(url, config.user, config.password).load()
-        db_migration.migrate()
+        val url = "jdbc:postgresql://${config.host}:${config.port}/${config.schema}?serverTimezone=UTC"
+        println(url)
+        val flyway = Flyway
+                .configure()
+                .locations("filesystem:/equidiaryDB/migration")
+                .dataSource(url, config.user, config.password)
+                .load()
+
+        flyway.migrate()
     }
 
     private fun failedToLoadConfig(config: DBConfig?) = config === NULL_CONFIG

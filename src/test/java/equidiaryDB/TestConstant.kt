@@ -4,6 +4,8 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 object TestConstant {
-    private const val TEST_FILES_DIRECTORY = "src/test/test_files"
+    const val TEST_FILES_DIRECTORY = "src/test/test_files"
+    const val MIGRATION_NAME = "V10000__migration_test.sql"
+    var MIGRATION_FILE: Path = Paths.get("$TEST_FILES_DIRECTORY/$MIGRATION_NAME")
     var CONFIG_PROPERTIES: Path = Paths.get("config/config.properties")
 }

@@ -23,7 +23,7 @@ class DataBaseE(private val connectionDB: Connection) {
 //
 //            }
 
-            val connection = DriverManager.getConnection("jdbc:mysql://$hostname:$port/$schema?serverTimezone=UTC",
+            val connection = DriverManager.getConnection("jdbc:postgresql://$hostname:$port/$schema?serverTimezone=UTC",
                     user,
                     password)
 
