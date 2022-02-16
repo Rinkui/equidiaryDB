@@ -1,16 +1,32 @@
 package equidiaryDB
 
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import equidiaryDB.config.DBConfig
 import equidiaryDB.config.NULL_CONFIG
 import equidiaryDB.config.getDBConfig
 import equidiaryDB.database.DataBaseE
+import equidiaryDB.services.HorseService
 import equidiaryDB.services.LoginService
 import io.javalin.Javalin
 import io.javalin.http.Context
+import io.javalin.plugin.json.JavalinJackson
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.flywaydb.core.Flyway
-import java.nio.file.Paths
+import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.javatime.date
+import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.LocalDate
+
+object Horses : IntIdTable("horse") {
+    val name = varchar("horse_name", 150)
+    val height = integer("height")
+    val weight = integer("weight").nullable()
+    val birthDate = date("birth_date")
+}
 
 object EquidiaryDB {
     private const val EQUIDIARYDB_PORT = 7001
@@ -28,19 +44,30 @@ object EquidiaryDB {
 
         applyDataBaseMigrations(config)
 
-        db = DataBaseE.createDatabase(config.host, config.port, config.user, config.password, config.schema)
-        app = Javalin.create().start(EQUIDIARYDB_PORT)
+        val objectMapper = jacksonObjectMapper()
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        objectMapper.registerModule(JavaTimeModule())
+
+        db = DataBaseE.createDatabase(config.host, config.port, config.user, config.password, config.schema, config.url)
+        app = Javalin.create { it.jsonMapper(JavalinJackson(objectMapper)) }.start(EQUIDIARYDB_PORT)
         createEndPoints()
+
+        transaction {
+            Horses.insert {
+                it[name] = "Fleur"
+                it[height] = 160
+                it[weight] = 500
+                it[birthDate] = LocalDate.of(2015, 4, 22)
+            }
+        }
     }
 
     private fun applyDataBaseMigrations(config: DBConfig) {
-        val url = "jdbc:postgresql://${config.host}:${config.port}/${config.schema}?serverTimezone=UTC"
-        println(url)
         val flyway = Flyway
-                .configure()
-                .locations("filesystem:/equidiaryDB/migration")
-                .dataSource(url, config.user, config.password)
-                .load()
+            .configure()
+            .locations("classpath:migration")
+            .dataSource(config.url, config.user, config.password)
+            .load()
 
         flyway.migrate()
     }
@@ -53,10 +80,11 @@ object EquidiaryDB {
     }
 
     private fun createEndPoints() {
-        app["/", { ctx: Context -> ctx.result("Hello World") }]
-        app["/users/:name", { ctx: Context ->
+        app.get("/") { ctx: Context -> ctx.result("Hello World") }
+        app.get("/users/{name}") { ctx: Context ->
             ctx.result("Hello " + ctx.pathParam("name"))
-        }]
-        app.post("/login", LoginService())
+        }
+        app.post("/login") { LoginService() }
+        app.get("/horse", HorseService())
     }
 }

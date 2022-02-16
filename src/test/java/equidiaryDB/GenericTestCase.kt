@@ -23,16 +23,16 @@ open class GenericTestCase {
             val user = ConfigurationFile.getProperty("userDB")
             val password = ConfigurationFile.getProperty("passwordDB")
             Database.connect(
-                    "jdbc:postgresql://$host:$port/$schema",
-                    driver = "org.postgresql.Driver",
-                    user = user,
-                    password = password
+                "jdbc:h2:mem:db;DB_CLOSE_DELAY=-1;MODE=MySQL",
+                driver = "org.h2.Driver",
+                user = "sa",
+                password = "sa"
             )
         }
     }
 
     @AfterEach
-    open fun tearDown(){
+    open fun tearDown() {
         transaction {
             Horses.deleteAll()
             Appointments.deleteAll()

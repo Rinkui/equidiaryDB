@@ -1,7 +1,7 @@
 plugins {
     id "nebula.ospackage" version "8.0.3"
     id 'com.github.johnrengelman.shadow' version '5.2.0'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.31'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
 }
 
 group 'equidiaryDB'
@@ -9,9 +9,6 @@ version '0.1'
 
 repositories {
     mavenCentral()
-    maven {
-        url "https://dl.bintray.com/kotlin/exposed"
-    }
 }
 
 buildRpm {
@@ -41,21 +38,28 @@ compileTestKotlin {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.10'
     compile fileTree(dir: "lib", includes: ['*.jar'])
-    compile 'io.javalin:javalin:3.5.0'
+    compile 'io.javalin:javalin:4.3.0'
     compile group: 'org.apache.commons', name: 'commons-io', version: '1.3.2'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.12.1'
-    compile "org.slf4j:slf4j-simple:1.7.26"
+    compile 'org.slf4j:slf4j-simple:1.7.35'
     compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
-    implementation 'org.jetbrains.exposed:exposed:0.17.7'
+    implementation "org.jetbrains.exposed:exposed-core:0.37.3"
+    implementation "org.jetbrains.exposed:exposed-dao:0.37.3"
+    implementation "org.jetbrains.exposed:exposed-jdbc:0.37.3"
+    implementation 'org.jetbrains.exposed:exposed-java-time:0.37.3'
     compile group: 'com.h2database', name: 'h2', version: '1.4.197'
-    compile("org.postgresql:postgresql:42.2.2")
+    compile('org.postgresql:postgresql:42.3.2')
     runtime group: 'com.natpryce', name: 'konfig', version: '1.4.0.0'
     compile group: 'org.json', name: 'json', version: '20190722'
     compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.3.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
-    testCompile 'org.junit.jupiter:junit-jupiter-params:5.3.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testCompile 'org.junit.jupiter:junit-jupiter-params:5.8.2'
+    implementation group: 'com.h2database', name: 'h2', version: '1.3.148'
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0"
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.4'
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.3.0-rc1'
 }
 

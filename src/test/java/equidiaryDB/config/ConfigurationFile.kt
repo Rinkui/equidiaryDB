@@ -6,11 +6,12 @@ object ConfigurationFile {
     private val file = CONFIG_PROPERTIES.toFile()
 
     private val defaultConfig = mapOf(
-            "hostDB" to "localhost",
-            "portDB" to "5432",
-            "userDB" to "equidiaryDB",
-            "passwordDB" to "xkrZsVjjpyBq4JHB",
-            "schemaDB" to "equidiary")
+        "hostDB" to "localhost",
+        "portDB" to "5432",
+        "userDB" to "sa",
+        "passwordDB" to "sa",
+        "schemaDB" to "equidiary",
+        "urlDB" to "jdbc:h2:mem:db;DB_CLOSE_DELAY=-1;MODE=MySQL")
 
     private var config = defaultConfig.toMutableMap()
 
@@ -22,10 +23,12 @@ object ConfigurationFile {
         file.writeText(text)
     }
 
-    fun getProperty(key : String)  = config.getOrDefault(key, "")
+    fun getProperty(key: String) = config.getOrDefault(key, "")
 
-    fun givenProperty(key: String,
-                      value: String) {
+    fun givenProperty(
+        key: String,
+        value: String,
+    ) {
         config.putIfAbsent(key, value)
         config.replace(key, value)
         writeFile()

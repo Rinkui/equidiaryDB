@@ -7,11 +7,14 @@ import java.sql.SQLException
 class DataBaseE(private val connectionDB: Connection) {
 
     companion object {
-        fun createDatabase(hostname: String,
-                           port: Int,
-                           user: String,
-                           password: String,
-                           schema: String): DataBaseE {
+        fun createDatabase(
+            hostname: String,
+            port: Int,
+            user: String,
+            password: String,
+            schema: String,
+            url: String,
+        ): DataBaseE {
 //            val connect = Database.connect(
 //                    "jdbc:postgresql://localhost:12346/test",
 //                    driver = "org.postgresql.Driver",
@@ -23,9 +26,9 @@ class DataBaseE(private val connectionDB: Connection) {
 //
 //            }
 
-            val connection = DriverManager.getConnection("jdbc:postgresql://$hostname:$port/$schema?serverTimezone=UTC",
-                    user,
-                    password)
+            val connection = DriverManager.getConnection(url,
+                user,
+                password)
 
             return DataBaseE(connection)
         }
@@ -40,8 +43,10 @@ class DataBaseE(private val connectionDB: Connection) {
      * @throws SQLException Throw the error which can be occur during the request to equidiaryDB.database.
      */
     @Throws(SQLException::class)
-    fun isCorrectUser(username: String?,
-                      password: String?): Int {
+    fun isCorrectUser(
+        username: String?,
+        password: String?,
+    ): Int {
         var userId = -1
         val request = "SELECT * FROM user WHERE name = ? AND password = ?"
         try {

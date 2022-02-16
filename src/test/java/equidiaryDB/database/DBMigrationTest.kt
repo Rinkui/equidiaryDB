@@ -2,10 +2,11 @@ package equidiaryDB.database
 
 import equidiaryDB.EquidiaryDB
 import equidiaryDB.GenericTestCase
-import equidiaryDB.TestConstant.MIGRATION_FILE
 import equidiaryDB.TestConstant.MIGRATION_NAME
 import equidiaryDB.config.ConfigurationFile
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -39,7 +40,7 @@ class DBMigrationTest : GenericTestCase() {
 
     private fun givenMigration() {
         ConfigurationFile.givenDefault()
-        Files.copy(MIGRATION_FILE, Paths.get("migration/$MIGRATION_NAME"))
+        //Files.copy(MIGRATION_FILE, Paths.get("migration/$MIGRATION_NAME"))
     }
 
     private fun whenStartApp() {
