@@ -10,16 +10,13 @@ import equidiaryDB.database.DataBaseE
 import equidiaryDB.services.HorseService
 import equidiaryDB.services.LoginService
 import io.javalin.Javalin
-import io.javalin.http.Context
+import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.plugin.json.JavalinJackson
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.date
-import org.jetbrains.exposed.sql.transactions.transaction
-import java.time.LocalDate
 
 object Horses : IntIdTable("horse") {
     val name = varchar("horse_name", 150)
@@ -51,15 +48,6 @@ object EquidiaryDB {
         db = DataBaseE.createDatabase(config.host, config.port, config.user, config.password, config.schema, config.url)
         app = Javalin.create { it.jsonMapper(JavalinJackson(objectMapper)) }.start(EQUIDIARYDB_PORT)
         createEndPoints()
-
-        transaction {
-            Horses.insert {
-                it[name] = "Fleur"
-                it[height] = 160
-                it[weight] = 500
-                it[birthDate] = LocalDate.of(2015, 4, 22)
-            }
-        }
     }
 
     private fun applyDataBaseMigrations(config: DBConfig) {
@@ -80,11 +68,14 @@ object EquidiaryDB {
     }
 
     private fun createEndPoints() {
-        app.get("/") { ctx: Context -> ctx.result("Hello World") }
-        app.get("/users/{name}") { ctx: Context ->
-            ctx.result("Hello " + ctx.pathParam("name"))
+        app.routes {
+            path("/horse") {
+                path("{horseName}") {
+                    get(HorseService()::getHorse)
+                }
+                post(HorseService()::createHorse)
+            }
+            post("/login", LoginService())
         }
-        app.post("/login") { LoginService() }
-        app.get("/horse", HorseService())
     }
 }

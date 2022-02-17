@@ -15,7 +15,7 @@ object Appointments : IntIdTable("appointment") {
     val date = date("appointment_date")
     val type = varchar("type", 50)
     val comment = varchar("comment", 512)
-    val horseId = reference("id", Horses)
+    val horseId = reference("horseId", Horses)
 }
 
 object EquidiaryUsers : Table("equidiary_user") {
