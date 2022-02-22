@@ -11,7 +11,7 @@ create table APPOINTMENT
 (
     id               serial primary key not null,
     appointment_date date               not null,
-    type             varchar(50)        not null,
+    appointment_type varchar(50)        not null,
     comment          varchar(512),
     horseId          int,
     FOREIGN KEY (horseId) REFERENCES horse (id)

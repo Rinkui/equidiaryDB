@@ -13,9 +13,11 @@ object Horses : IntIdTable("horse") {
 
 object Appointments : IntIdTable("appointment") {
     val date = date("appointment_date")
-    val type = varchar("type", 50)
+    val type = varchar("appointment_type", 50)
     val comment = varchar("comment", 512)
     val horseId = reference("horseId", Horses)
+    //file name (comme ça on peut faire une vision fichier avec les noms d'origines
+    //chemin sur le serveur Uuid UUID.randomUUID().toString()
 }
 
 object EquidiaryUsers : Table("equidiary_user") {

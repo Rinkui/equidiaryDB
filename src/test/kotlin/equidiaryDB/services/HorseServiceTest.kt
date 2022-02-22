@@ -1,9 +1,9 @@
 package equidiaryDB.services
 
 import com.mashape.unirest.http.Unirest.get
-import com.mashape.unirest.http.Unirest.post
-import equidiaryDB.Horses
+import com.mashape.unirest.http.Unirest.put
 import equidiaryDB.WebTestCase
+import equidiaryDB.database.Horses
 import equidiaryDB.utils.bodyIs
 import equidiaryDB.utils.isBadRequest
 import equidiaryDB.utils.isOk
@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 class HorseServiceTest : WebTestCase() {
+    private val HORSE_ENDPOINT = "/horse"
+
     @Test
     fun getHorseNominal() {
         givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22))
@@ -26,15 +28,8 @@ class HorseServiceTest : WebTestCase() {
     }
 
     @Test
-    fun getUnknownHorse() {
-        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22))
-
-        whenGetHorse("Unknown").resourceNotFound()
-    }
-
-    @Test
     fun postHorseNominal() {
-        whenPostHorse("""{"name":"Fleur","height":160,"weight":500,"birthDate":"2015-04-22"}""")
+        whenPutHorse("""{"name":"Fleur","height":160,"weight":500,"birthDate":"2015-04-22"}""")
             .isOk()
 
         val horseResult = transaction { Horses.select { Horses.name eq "Fleur" }.toList()[0] }
@@ -45,8 +40,15 @@ class HorseServiceTest : WebTestCase() {
     }
 
     @Test
+    fun getUnknownHorse() {
+        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22))
+
+        whenGetHorse("Unknown").resourceNotFound()
+    }
+
+    @Test
     fun missingMandatoryField() {
-        whenPostHorse("""{"height":160,"weight":500,"birthDate":"2015-04-22"}""")
+        whenPutHorse("""{"height":160,"weight":500,"birthDate":"2015-04-22"}""")
             .isBadRequest()
     }
 
@@ -62,6 +64,6 @@ class HorseServiceTest : WebTestCase() {
     }
 
     // WHEN
-    private fun whenPostHorse(horseBody: String) = post("$EQUIDIARYDB_PATH$GET_HORSE_ENDPOINT").body(horseBody).asString()
-    private fun whenGetHorse(horseName: String) = get("$EQUIDIARYDB_PATH$GET_HORSE_ENDPOINT/$horseName").asString()
+    private fun whenPutHorse(horseBody: String) = put("$EQUIDIARYDB_PATH$HORSE_ENDPOINT").body(horseBody).asString()
+    private fun whenGetHorse(horseName: String) = get("$EQUIDIARYDB_PATH$HORSE_ENDPOINT/$horseName").asString()
 }

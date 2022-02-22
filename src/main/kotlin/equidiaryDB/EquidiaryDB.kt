@@ -7,6 +7,7 @@ import equidiaryDB.config.DBConfig
 import equidiaryDB.config.NULL_CONFIG
 import equidiaryDB.config.getDBConfig
 import equidiaryDB.database.DataBaseE
+import equidiaryDB.services.AppointmentService
 import equidiaryDB.services.HorseService
 import equidiaryDB.services.LoginService
 import io.javalin.Javalin
@@ -15,15 +16,6 @@ import io.javalin.plugin.json.JavalinJackson
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.flywaydb.core.Flyway
-import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.javatime.date
-
-object Horses : IntIdTable("horse") {
-    val name = varchar("horse_name", 150)
-    val height = integer("height")
-    val weight = integer("weight").nullable()
-    val birthDate = date("birth_date")
-}
 
 object EquidiaryDB {
     private const val EQUIDIARYDB_PORT = 7001
@@ -72,8 +64,12 @@ object EquidiaryDB {
             path("/horse") {
                 path("{horseName}") {
                     get(HorseService()::getHorse)
+                    path("/appointments") {
+                        get(AppointmentService()::getAppointments)
+                        put(AppointmentService()::createAppointments)
+                    }
                 }
-                post(HorseService()::createHorse)
+                put(HorseService()::createHorse)
             }
             post("/login", LoginService())
         }

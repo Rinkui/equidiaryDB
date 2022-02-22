@@ -9,7 +9,6 @@ abstract class WebTestCase : GenericTestCase() {
         private const val EQUIDIARYDB_PORT = "7001"
         private const val EQUIDIARYDB_IP = "localhost"
         const val EQUIDIARYDB_PATH = "http://$EQUIDIARYDB_IP:$EQUIDIARYDB_PORT"
-        const val GET_HORSE_ENDPOINT = "/horse"
         private var response: HttpResponse<String>? = null
     }
 

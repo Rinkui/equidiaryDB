@@ -34,8 +34,8 @@ open class GenericTestCase {
     @AfterEach
     open fun tearDown() {
         transaction {
-            Horses.deleteAll()
             Appointments.deleteAll()
+            Horses.deleteAll()
             EquidiaryUsers.deleteAll()
         }
     }
