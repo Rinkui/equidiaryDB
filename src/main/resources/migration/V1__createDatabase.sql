@@ -4,7 +4,8 @@ create table HORSE
     horse_name varchar(150)       not null,
     height     int                not null,
     weight     int,
-    birth_date date               not null
+    birth_date date               not null,
+    uuid       varchar(50)        not null
 );
 
 create table APPOINTMENT
@@ -14,6 +15,7 @@ create table APPOINTMENT
     appointment_type varchar(50)        not null,
     comment          varchar(512),
     horseId          int,
+    uuid             varchar(50)        not null,
     FOREIGN KEY (horseId) REFERENCES horse (id)
 );
 

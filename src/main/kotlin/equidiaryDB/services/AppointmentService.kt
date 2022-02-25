@@ -8,6 +8,7 @@ import io.javalin.http.Context
 import io.javalin.http.Handler
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 
 class AppointmentService : Handler {
 
@@ -31,7 +32,7 @@ class AppointmentService : Handler {
             return
         }
 
-        val postAppointments: Appointment = try {
+        val bodyAppointments: Appointment = try {
             JsonUtils.fromJson(context.body(), Appointment::class.java)
         } catch (e: Throwable) {
             context.status(400)
@@ -40,10 +41,36 @@ class AppointmentService : Handler {
 
         transaction {
             Appointments.insert {
-                it[date] = postAppointments.date
-                it[type] = postAppointments.type
-                it[comment] = postAppointments.comment
-                it[horseId] = postAppointments.horseId
+                it[date] = bodyAppointments.date
+                it[type] = bodyAppointments.type
+                it[comment] = bodyAppointments.comment
+                it[horseId] = bodyAppointments.horseId
+            }
+        }
+        context.status(200)
+    }
+
+    fun updateAppointments(context: Context) {
+        val horseName = context.pathParam("horseName")
+        val horses = DatabaseService.getHorses(horseName)
+        if (horses.isEmpty()) {
+            context.status(404)
+            return
+        }
+
+        val bodyAppointments: Appointment = try {
+            JsonUtils.fromJson(context.body(), Appointment::class.java)
+        } catch (e: Throwable) {
+            context.status(400)
+            return
+        }
+
+        transaction {
+            Appointments.update({ Appointments.uuid eq bodyAppointments.uuid }) {
+                it[date] = bodyAppointments.date
+                it[type] = bodyAppointments.type
+                it[comment] = bodyAppointments.comment
+                it[horseId] = bodyAppointments.horseId
             }
         }
         context.status(200)

@@ -5,6 +5,7 @@ import equidiaryDB.database.Horses
 import equidiaryDB.database.Horses.birthDate
 import equidiaryDB.database.Horses.height
 import equidiaryDB.database.Horses.name
+import equidiaryDB.database.Horses.uuid
 import equidiaryDB.database.Horses.weight
 import equidiaryDB.domain.Horse
 import io.javalin.http.Context
@@ -22,7 +23,7 @@ class HorseService : Handler {
             return
         }
         val horseResult = select[0]
-        val horse = Horse(horseResult[name], horseResult[height], horseResult[weight], horseResult[birthDate])
+        val horse = Horse(horseResult[name], horseResult[height], horseResult[weight], horseResult[uuid], horseResult[birthDate])
         context.json(horse)
     }
 
@@ -38,6 +39,7 @@ class HorseService : Handler {
                 it[name] = postHorse.name
                 it[height] = postHorse.height
                 it[weight] = postHorse.weight
+                it[uuid] = postHorse.uuid
                 it[birthDate] = postHorse.birthDate
             }
         }

@@ -67,6 +67,7 @@ object EquidiaryDB {
                     path("/appointments") {
                         get(AppointmentService()::getAppointments)
                         put(AppointmentService()::createAppointments)
+                        post(AppointmentService()::updateAppointments)
                     }
                 }
                 put(HorseService()::createHorse)
