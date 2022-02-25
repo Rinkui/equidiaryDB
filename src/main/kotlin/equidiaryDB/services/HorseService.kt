@@ -1,48 +1,49 @@
 package equidiaryDB.services
 
 import equidiaryDB.JsonUtils
-import equidiaryDB.database.Horses
-import equidiaryDB.database.Horses.birthDate
-import equidiaryDB.database.Horses.height
-import equidiaryDB.database.Horses.name
-import equidiaryDB.database.Horses.uuid
-import equidiaryDB.database.Horses.weight
+import equidiaryDB.database.DatabaseService
 import equidiaryDB.domain.Horse
 import io.javalin.http.Context
 import io.javalin.http.Handler
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.transactions.transaction
 
 class HorseService : Handler {
 
     fun getHorse(context: Context) {
-        val select = transaction { Horses.select { name eq context.pathParam("horseName") }.toList() }
+        val select = DatabaseService.getHorses()
         if (select.isEmpty()) {
             context.status(404)
             return
         }
-        val horseResult = select[0]
-        val horse = Horse(horseResult[name], horseResult[height], horseResult[weight], horseResult[uuid], horseResult[birthDate])
-        context.json(horse)
+        context.json(select[0])
     }
 
     fun createHorse(context: Context) {
-        val postHorse: Horse = try {
+        val horse: Horse = try {
             JsonUtils.fromJson(context.body(), Horse::class.java)
         } catch (e: Throwable) {
             context.status(400)
             return
         }
-        transaction {
-            Horses.insert {
-                it[name] = postHorse.name
-                it[height] = postHorse.height
-                it[weight] = postHorse.weight
-                it[uuid] = postHorse.uuid
-                it[birthDate] = postHorse.birthDate
-            }
+
+        DatabaseService.insertHorse(horse)
+        context.status(200)
+    }
+
+    fun updateHorse(context: Context) {
+        val horses = DatabaseService.getHorses(context.pathParam("horseName"))
+        if (horses.isEmpty()) {
+            context.status(404)
+            return
         }
+
+        val updatedHorse = try {
+            JsonUtils.fromJson(context.body(), Horse::class.java)
+        } catch (e: Throwable) {
+            context.status(400)
+            return
+        }
+
+        DatabaseService.updateHorse(updatedHorse)
         context.status(200)
     }
 

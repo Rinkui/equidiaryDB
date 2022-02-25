@@ -64,10 +64,11 @@ object EquidiaryDB {
             path("/horse") {
                 path("{horseName}") {
                     get(HorseService()::getHorse)
+                    post(HorseService()::updateHorse)
                     path("/appointments") {
                         get(AppointmentService()::getAppointments)
-                        put(AppointmentService()::createAppointments)
-                        post(AppointmentService()::updateAppointments)
+                        put(AppointmentService()::createAppointment)
+                        post(AppointmentService()::updateAppointment)
                     }
                 }
                 put(HorseService()::createHorse)

@@ -1,78 +1,57 @@
 package equidiaryDB.services
 
 import equidiaryDB.JsonUtils
-import equidiaryDB.database.Appointments
 import equidiaryDB.database.DatabaseService
 import equidiaryDB.domain.Appointment
 import io.javalin.http.Context
 import io.javalin.http.Handler
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 
 class AppointmentService : Handler {
 
     fun getAppointments(context: Context) {
-        val horseName = context.pathParam("horseName")
-        val horses = DatabaseService.getHorses(horseName)
+        val horses = DatabaseService.getHorses(context.pathParam("horseName"))
         if (horses.isEmpty()) {
             context.status(404)
             return
         }
 
-        val appointments = DatabaseService.getAppointments(horseName)
+        val appointments = DatabaseService.getAppointments(context.pathParam("horseName"))
         context.json(appointments)
     }
 
-    fun createAppointments(context: Context) {
-        val horseName = context.pathParam("horseName")
-        val horses = DatabaseService.getHorses(horseName)
+    fun createAppointment(context: Context) {
+        val horses = DatabaseService.getHorses(context.pathParam("horseName"))
         if (horses.isEmpty()) {
             context.status(404)
             return
         }
 
-        val bodyAppointments: Appointment = try {
+        val appointments: Appointment = try {
             JsonUtils.fromJson(context.body(), Appointment::class.java)
         } catch (e: Throwable) {
             context.status(400)
             return
         }
 
-        transaction {
-            Appointments.insert {
-                it[date] = bodyAppointments.date
-                it[type] = bodyAppointments.type
-                it[comment] = bodyAppointments.comment
-                it[horseId] = bodyAppointments.horseId
-            }
-        }
+        DatabaseService.insertAppointment(appointments)
         context.status(200)
     }
 
-    fun updateAppointments(context: Context) {
-        val horseName = context.pathParam("horseName")
-        val horses = DatabaseService.getHorses(horseName)
+    fun updateAppointment(context: Context) {
+        val horses = DatabaseService.getHorses(context.pathParam("horseName"))
         if (horses.isEmpty()) {
             context.status(404)
             return
         }
 
-        val bodyAppointments: Appointment = try {
+        val appointment: Appointment = try {
             JsonUtils.fromJson(context.body(), Appointment::class.java)
         } catch (e: Throwable) {
             context.status(400)
             return
         }
 
-        transaction {
-            Appointments.update({ Appointments.uuid eq bodyAppointments.uuid }) {
-                it[date] = bodyAppointments.date
-                it[type] = bodyAppointments.type
-                it[comment] = bodyAppointments.comment
-                it[horseId] = bodyAppointments.horseId
-            }
-        }
+        DatabaseService.updateAppointment(appointment)
         context.status(200)
     }
 

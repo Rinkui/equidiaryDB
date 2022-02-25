@@ -40,7 +40,7 @@ class HorseServiceTest : WebTestCase() {
         val horseUuid = randomUUID()
         givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid.toString())
 
-        whenPostHorse("""{"name":"Fleur","height":160,"weight":450,"uuid":"$horseUuid","birthDate":"2015-04-22"}""")
+        whenPostHorse("Fleur", """{"name":"Fleur","height":160,"weight":450,"uuid":"$horseUuid","birthDate":"2015-04-22"}""")
             .isOk()
 
         val horseResult = transaction { Horses.select { Horses.name eq "Fleur" }.toList()[0] }
@@ -65,6 +65,6 @@ class HorseServiceTest : WebTestCase() {
 
     // WHEN
     private fun whenPutHorse(horseBody: String) = put("$EQUIDIARYDB_PATH$HORSE_ENDPOINT").body(horseBody).asString()
-    private fun whenPostHorse(horseBody: String) = post("$EQUIDIARYDB_PATH$HORSE_ENDPOINT").body(horseBody).asString()
+    private fun whenPostHorse(horseName: String, horseBody: String) = post("$EQUIDIARYDB_PATH$HORSE_ENDPOINT/$horseName").body(horseBody).asString()
     private fun whenGetHorse(horseName: String) = get("$EQUIDIARYDB_PATH$HORSE_ENDPOINT/$horseName").asString()
 }
