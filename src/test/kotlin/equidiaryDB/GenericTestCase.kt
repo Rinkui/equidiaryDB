@@ -22,6 +22,7 @@ open class GenericTestCase {
             val schema = ConfigurationFile.getProperty("schemaDB")
             val user = ConfigurationFile.getProperty("userDB")
             val password = ConfigurationFile.getProperty("passwordDB")
+            //TODO le faire dans le code op !!!!!! 
             Database.connect(
                 "jdbc:h2:mem:db;DB_CLOSE_DELAY=-1;MODE=MySQL",
                 driver = "org.h2.Driver",

@@ -9,7 +9,12 @@ import io.javalin.http.Handler
 class HorseService : Handler {
 
     fun getHorse(context: Context) {
-        val select = DatabaseService.getHorses()
+        val horseName = context.pathParam("horseName")
+        val select = if (horseName.isNotEmpty()) {
+            DatabaseService.getHorse(horseName)
+        } else {
+            DatabaseService.getHorses()
+        }
         if (select.isEmpty()) {
             context.status(404)
             return

@@ -10,6 +10,11 @@ import org.jetbrains.exposed.sql.update
 
 object DatabaseService {
 
+    fun getHorse(horseName: String) = transaction {
+        Horses.select { Horses.name eq horseName }
+            .map { Horse(it[Horses.name], it[Horses.height], it[Horses.weight], it[Horses.uuid], it[Horses.birthDate]) }
+    }
+
     fun getHorses() = transaction {
         Horses.selectAll()
             .map { Horse(it[Horses.name], it[Horses.height], it[Horses.weight], it[Horses.uuid], it[Horses.birthDate]) }

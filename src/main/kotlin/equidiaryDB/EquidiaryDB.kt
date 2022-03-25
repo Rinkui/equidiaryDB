@@ -37,7 +37,7 @@ object EquidiaryDB {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         objectMapper.registerModule(JavaTimeModule())
 
-        db = DataBaseE.createDatabase(config.host, config.port, config.user, config.password, config.schema, config.url)
+//        db = DataBaseE.createDatabase(config.host, config.port, config.user, config.password, config.schema, config.url)
         app = Javalin.create { it.jsonMapper(JavalinJackson(objectMapper)) }.start(EQUIDIARYDB_PORT)
         createEndPoints()
     }
