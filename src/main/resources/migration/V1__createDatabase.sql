@@ -1,11 +1,11 @@
-create table EQUIDIARY_USER
+create table owner
 (
     uuid      varchar(50) primary key not null,
     user_name varchar(100) unique     not null,
     password  bytea                   not null
 );
 
-create table HORSE
+create table horse
 (
     uuid       varchar(50) primary key not null,
     horse_name varchar(150)            not null,
@@ -13,10 +13,10 @@ create table HORSE
     weight     int,
     birth_date date                    not null,
     userUuid   varchar(50),
-    FOREIGN KEY (userUuid) REFERENCES equidiary_user (uuid)
+    FOREIGN KEY (userUuid) REFERENCES owner (uuid)
 );
 
-create table APPOINTMENT
+create table appointment
 (
     uuid             varchar(50) primary key not null,
     appointment_date date                    not null,

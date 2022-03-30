@@ -22,7 +22,7 @@ object EquidiaryDB {
     private const val EQUIDIARYDB_PORT = 7001
     private lateinit var app: Javalin
     val tokenProvider = TokenProvider()
-    val equiLogger: Logger = LogManager.getLogger()
+    val equiLogger: Logger = LogManager.getLogger() //TODO change for logback
 
     @JvmStatic
     fun start() {

@@ -2,8 +2,8 @@ package equidiaryDB
 
 import equidiaryDB.config.ConfigurationFile
 import equidiaryDB.database.Appointments
-import equidiaryDB.database.EquidiaryUsers
 import equidiaryDB.database.Horses
+import equidiaryDB.database.Users
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -37,7 +37,7 @@ open class GenericTestCase {
         transaction {
             Appointments.deleteAll()
             Horses.deleteAll()
-            EquidiaryUsers.deleteAll()
+            Users.deleteAll()
         }
     }
 }

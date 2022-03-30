@@ -1,8 +1,8 @@
 package equidiaryDB.utils
 
 import equidiaryDB.database.Appointments
-import equidiaryDB.database.EquidiaryUsers
 import equidiaryDB.database.Horses
+import equidiaryDB.database.Users
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDate
@@ -22,7 +22,7 @@ fun givenHorse(horseName: String, horseHeight: Int, horseWeight: Int, horseBirth
 
 fun givenUser(userUuid: String, user: String, pwd: ByteArray) {
     transaction {
-        EquidiaryUsers.insert {
+        Users.insert {
             it[uuid] = userUuid
             it[userName] = user
             it[password] = pwd

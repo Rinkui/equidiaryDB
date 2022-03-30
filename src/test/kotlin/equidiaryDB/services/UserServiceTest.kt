@@ -3,7 +3,7 @@ package equidiaryDB.services
 import com.mashape.unirest.http.Unirest
 import com.toxicbakery.bcrypt.Bcrypt
 import equidiaryDB.WebTestCase
-import equidiaryDB.database.EquidiaryUsers
+import equidiaryDB.database.Users
 import equidiaryDB.utils.*
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -41,7 +41,7 @@ class UserServiceTest : WebTestCase() {
         whenCreateUser("""{"username":"marie","password":"password"}""")
             .isOk()
 
-        assertEquals(1, transaction { EquidiaryUsers.select { EquidiaryUsers.userName eq "marie" }.toList() }.size)
+        assertEquals(1, transaction { Users.select { Users.userName eq "marie" }.toList() }.size)
     }
 
     @Test

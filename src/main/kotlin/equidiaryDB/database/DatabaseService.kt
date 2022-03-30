@@ -12,12 +12,12 @@ import java.util.UUID.randomUUID
 
 object DatabaseService {
     fun getUser(username: String) = transaction {
-        EquidiaryUsers.select { EquidiaryUsers.userName eq username }
-            .map { User(it[EquidiaryUsers.userName], it[EquidiaryUsers.password]) }
+        Users.select { Users.userName eq username }
+            .map { User(it[Users.userName], it[Users.password]) }
     }
 
     fun createUser(name: String, hash: ByteArray) = transaction {
-        EquidiaryUsers.insert {
+        Users.insert {
             it[uuid] = randomUUID().toString()
             it[userName] = name
             it[password] = hash

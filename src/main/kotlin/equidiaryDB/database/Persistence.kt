@@ -9,7 +9,7 @@ object Horses : Table("horse") {
     val height = integer("height")
     val weight = integer("weight").nullable()
     val birthDate = date("birth_date")
-    val userUuid = varchar("userUuid", 50).references(EquidiaryUsers.uuid)
+    val userUuid = varchar("userUuid", 50).references(Users.uuid)
 }
 
 object Appointments : Table("appointment") {
@@ -22,7 +22,7 @@ object Appointments : Table("appointment") {
     //chemin sur le serveur Uuid UUID.randomUUID().toString()
 }
 
-object EquidiaryUsers : Table("equidiary_user") {
+object Users : Table("owner") {
     val uuid = varchar("uuid", 50).uniqueIndex()
     val userName = varchar("user_name", 100).uniqueIndex()
     val password = binary("password", 100)
