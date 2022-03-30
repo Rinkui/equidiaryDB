@@ -1,33 +1,43 @@
 package equidiaryDB.services
 
 import com.mashape.unirest.http.Unirest.*
+import com.toxicbakery.bcrypt.Bcrypt
 import equidiaryDB.WebTestCase
 import equidiaryDB.database.Appointments
 import equidiaryDB.utils.*
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.util.UUID.randomUUID
 
 class AppointmentServiceTest : WebTestCase() {
     private val APPOINTMENT_ENDPOINT = "/horse/{horseName}/appointments"
+    private var userUuid: String = ""
+
+    @BeforeEach
+    override fun setup() {
+        super.setup()
+        userUuid = randomUUID().toString()
+        givenUser(userUuid, "marie", Bcrypt.hash("marie", 8))
+    }
 
     @Test
     fun getAppointmentNominal() {
         val horseUuid = randomUUID().toString()
-        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid, randomUUID().toString())
+        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid, userUuid)
         givenAppointment(LocalDate.of(2022, 2, 18), "vet", "vaccins", horseUuid, randomUUID().toString())
 
         whenGetAppointments("Fleur")
             .isOk()
-            .bodyLike(Regex("""\[\{"date":"2022-02-18","type":"vet","comment":"vaccins","uuid":".{36}","horseId":1\}\]"""))
+            .bodyLike(Regex("""\[\{"date":"2022-02-18","type":"vet","comment":"vaccins","uuid":".{36}","horseUuid":".{36}"\}\]"""))
     }
 
     @Test
     fun getEmptyAppointment() {
-        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), randomUUID().toString(), randomUUID().toString())
+        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), randomUUID().toString(), userUuid)
 
         whenGetAppointments("Fleur")
             .isOk()
@@ -36,8 +46,9 @@ class AppointmentServiceTest : WebTestCase() {
 
     @Test
     fun getUnknownHorse() {
-        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), randomUUID().toString(), randomUUID().toString())
-        givenAppointment(LocalDate.of(2022, 2, 18), "vet", "vaccins", "1", randomUUID().toString())
+        val horseUuid = randomUUID().toString()
+        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid, userUuid)
+        givenAppointment(LocalDate.of(2022, 2, 18), "vet", "vaccins", horseUuid, randomUUID().toString())
 
         whenGetAppointments("Unknown").resourceNotFound()
     }
@@ -45,9 +56,9 @@ class AppointmentServiceTest : WebTestCase() {
     @Test
     fun putAppointmentNominal() {
         val horseUuid = randomUUID().toString()
-        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid, randomUUID().toString())
+        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid, userUuid)
 
-        whenPutAppointment("Fleur", """{"date":"2022-02-18","type":"podologue","comment":"parage","uuid":"${randomUUID()}","horseId":1}""")
+        whenPutAppointment("Fleur", """{"date":"2022-02-18","type":"podologue","comment":"parage","uuid":"${randomUUID()}","horseUuid":"$horseUuid"}""")
 
         val appointmentsResult = transaction { Appointments.select { Appointments.horseUuid eq horseUuid }.toList() }
         assertEquals(1, appointmentsResult.size)
@@ -61,13 +72,13 @@ class AppointmentServiceTest : WebTestCase() {
     @Test
     fun editAppointment() {
         val horseUuid = randomUUID().toString()
-        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid, randomUUID().toString())
+        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid, userUuid)
         val appointmentUuid = randomUUID().toString()
-        givenAppointment(LocalDate.of(2022, 2, 18), "vet", "vaccins", "1", appointmentUuid)
+        givenAppointment(LocalDate.of(2022, 2, 18), "vet", "vaccins", horseUuid, appointmentUuid)
 
-        whenPostAppointment("Fleur", """{"date":"2022-02-18","type":"podologue","comment":"parage","uuid":"$appointmentUuid","horseId":1}""")
+        whenPostAppointment("Fleur", """{"date":"2022-02-18","type":"podologue","comment":"parage","uuid":"$appointmentUuid","horseUuid":"$horseUuid"}""")
 
-        val appointmentsResult = transaction { Appointments.select { Appointments.horseUuid eq appointmentUuid }.toList() }
+        val appointmentsResult = transaction { Appointments.select { Appointments.uuid eq appointmentUuid }.toList() }
         assertEquals(1, appointmentsResult.size)
         val appointmentResult = appointmentsResult[0]
         assertEquals(LocalDate.of(2022, 2, 18), appointmentResult[Appointments.date])

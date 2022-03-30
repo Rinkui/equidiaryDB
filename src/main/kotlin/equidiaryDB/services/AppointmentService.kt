@@ -1,5 +1,6 @@
 package equidiaryDB.services
 
+import equidiaryDB.EquidiaryDB.equiLogger
 import equidiaryDB.JsonUtils
 import equidiaryDB.database.DatabaseService
 import equidiaryDB.domain.Appointment
@@ -47,6 +48,7 @@ class AppointmentService : Handler {
         val appointment: Appointment = try {
             JsonUtils.fromJson(context.body(), Appointment::class.java)
         } catch (e: Throwable) {
+            equiLogger.error(e.printStackTrace())
             context.status(400)
             return
         }
