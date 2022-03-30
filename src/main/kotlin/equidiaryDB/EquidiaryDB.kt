@@ -11,6 +11,7 @@ import equidiaryDB.services.HorseService
 import equidiaryDB.services.UserService
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.*
+import io.javalin.http.ForbiddenResponse
 import io.javalin.plugin.json.JavalinJackson
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -57,12 +58,18 @@ object EquidiaryDB {
     }
 
     private fun createEndPoints() {
+        app.before("/horse/**") { context ->
+            val header = context.header("Authorization")
+            if (header.isNullOrEmpty()) {
+                throw ForbiddenResponse()
+            }
+        }
         app.routes {
-            path("/horse") {
+            path("horse") {
                 path("{horseName}") {
                     get(HorseService()::getHorse)
                     post(HorseService()::updateHorse)
-                    path("/appointments") {
+                    path("appointments") {
                         get(AppointmentService()::getAppointments)
                         put(AppointmentService()::createAppointment)
                         post(AppointmentService()::updateAppointment)
@@ -70,7 +77,7 @@ object EquidiaryDB {
                 }
                 put(HorseService()::createHorse)
             }
-            path("/login") {
+            path("login") {
                 post(UserService()::login)
                 put(UserService()::createUser)
             }

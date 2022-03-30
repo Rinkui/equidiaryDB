@@ -89,11 +89,12 @@ class AppointmentServiceTest : WebTestCase() {
 
     // WHEN
     private fun whenPutAppointment(horseName: String, appointmentBody: String) =
-        put("$EQUIDIARYDB_PATH${APPOINTMENT_ENDPOINT.replace("{horseName}", horseName)}").body(appointmentBody).asString()
+        put("$EQUIDIARYDB_PATH${APPOINTMENT_ENDPOINT.replace("{horseName}", horseName)}").withDefaultHeaders().body(appointmentBody).asString()
 
     private fun whenPostAppointment(horseName: String, appointmentBody: String) =
-        post("$EQUIDIARYDB_PATH${APPOINTMENT_ENDPOINT.replace("{horseName}", horseName)}").body(appointmentBody).asString()
+        post("$EQUIDIARYDB_PATH${APPOINTMENT_ENDPOINT.replace("{horseName}", horseName)}").withDefaultHeaders().body(appointmentBody).asString()
 
-    private fun whenGetAppointments(horseName: String) = get("$EQUIDIARYDB_PATH${APPOINTMENT_ENDPOINT.replace("{horseName}", horseName)}").asString()
+    private fun whenGetAppointments(horseName: String) =
+        get("$EQUIDIARYDB_PATH${APPOINTMENT_ENDPOINT.replace("{horseName}", horseName)}").withDefaultHeaders().asString()
 
 }

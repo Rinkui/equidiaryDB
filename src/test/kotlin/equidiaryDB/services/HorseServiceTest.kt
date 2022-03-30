@@ -74,7 +74,9 @@ class HorseServiceTest : WebTestCase() {
     }
 
     // WHEN
-    private fun whenPutHorse(horseBody: String) = put("$EQUIDIARYDB_PATH$HORSE_ENDPOINT").body(horseBody).asString()
-    private fun whenPostHorse(horseName: String, horseBody: String) = post("$EQUIDIARYDB_PATH$HORSE_ENDPOINT/$horseName").body(horseBody).asString()
-    private fun whenGetHorse(horseName: String) = get("$EQUIDIARYDB_PATH$HORSE_ENDPOINT/$horseName").asString()
+    private fun whenPutHorse(horseBody: String) = put("$EQUIDIARYDB_PATH$HORSE_ENDPOINT").withDefaultHeaders().body(horseBody).asString()
+    private fun whenPostHorse(horseName: String, horseBody: String) =
+        post("$EQUIDIARYDB_PATH$HORSE_ENDPOINT/$horseName").withDefaultHeaders().body(horseBody).asString()
+
+    private fun whenGetHorse(horseName: String) = get("$EQUIDIARYDB_PATH$HORSE_ENDPOINT/$horseName").withDefaultHeaders().asString()
 }

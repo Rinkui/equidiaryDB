@@ -1,6 +1,8 @@
 package equidiaryDB.utils
 
 import com.mashape.unirest.http.HttpResponse
+import com.mashape.unirest.request.GetRequest
+import com.mashape.unirest.request.HttpRequestWithBody
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 
@@ -21,3 +23,6 @@ fun <T> HttpResponse<T>.isOk(): HttpResponse<T> {
     assertEquals(200, code)
     return this
 }
+
+fun HttpRequestWithBody.withDefaultHeaders() = header("Authorization", "Bearer")!! //TODO mettre un token
+fun GetRequest.withDefaultHeaders() = header("Authorization", "Bearer")!! //TODO mettre un token
