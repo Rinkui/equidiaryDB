@@ -1,14 +1,13 @@
 package equidiaryDB.services
 
 import com.toxicbakery.bcrypt.Bcrypt
-import equidiaryDB.EquidiaryDB.db
 import equidiaryDB.database.DatabaseService
 import equidiaryDB.security.TokenProvider
 import io.javalin.http.Context
 import io.javalin.http.Handler
 import org.json.JSONObject
 
-class LoginService : Handler {
+class UserService : Handler {
     private val USERNAME = "username"
     private val PASSWORD = "password"
 
@@ -25,19 +24,19 @@ class LoginService : Handler {
         context.json(TokenProvider().createToken(username))
     }
 
-    override fun handle(context: Context) {
+    fun createUser(context: Context) {
         val requestBody = JSONObject(context.body())
         val username = requestBody.getString(USERNAME)
         val password = requestBody.getString(PASSWORD)
-        val userId = db.isCorrectUser(username, password)
-        if (isCorrectUser(userId)) {
-            context.result("Hello $username")
-        } else {
-            context.result("Wrong username or password")
+        val user = DatabaseService.getUser(username)
+        if (user.isNotEmpty()) {
+            context.status(400)
+            context.result("""{"message":"User already exists"}""")
+            return
         }
+        DatabaseService.createUser(username, Bcrypt.hash(password, 8))
+        context.status(200)
     }
 
-    private fun isCorrectUser(userId: Int): Boolean {
-        return userId >= 0
-    }
+    override fun handle(context: Context) {}
 }

@@ -3,14 +3,15 @@ package equidiaryDB.services
 import com.mashape.unirest.http.Unirest
 import com.toxicbakery.bcrypt.Bcrypt
 import equidiaryDB.WebTestCase
-import equidiaryDB.utils.bodyLike
-import equidiaryDB.utils.givenUser
-import equidiaryDB.utils.isForbidden
-import equidiaryDB.utils.isOk
+import equidiaryDB.database.EquidiaryUsers
+import equidiaryDB.utils.*
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.util.*
 
-class LoginServiceTest : WebTestCase() {
+class UserServiceTest : WebTestCase() {
     @Test
     fun loginNominal() {
         givenUser(UUID.randomUUID().toString(), "marie", Bcrypt.hash("marie", 8))
@@ -35,8 +36,27 @@ class LoginServiceTest : WebTestCase() {
             .isForbidden()
     }
 
+    @Test
+    fun createUserNominal() {
+        whenCreateUser("""{"username":"marie","password":"password"}""")
+            .isOk()
+
+        assertEquals(1, transaction { EquidiaryUsers.select { EquidiaryUsers.userName eq "marie" }.toList() }.size)
+    }
+
+    @Test
+    fun createExistingUserError() {
+        givenUser(UUID.randomUUID().toString(), "marie", Bcrypt.hash("marie", 8))
+
+        whenCreateUser("""{"username":"marie","password":"password"}""")
+            .isBadRequest()
+            .withBody("""{"message":"User already exists"}""")
+
+    }
+
     // WHEN
     private fun whenLogin(loginBody: String) = Unirest.post("$EQUIDIARYDB_PATH$LOGIN_ENDPOINT").body(loginBody).asString()
+    private fun whenCreateUser(loginBody: String) = Unirest.put("$EQUIDIARYDB_PATH$LOGIN_ENDPOINT").body(loginBody).asString()
 
     companion object {
         private const val LOGIN_ENDPOINT = "/login"

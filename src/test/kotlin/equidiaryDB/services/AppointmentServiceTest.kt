@@ -41,7 +41,7 @@ class AppointmentServiceTest : WebTestCase() {
 
         whenGetAppointments("Fleur")
             .isOk()
-            .bodyIs("""[]""")
+            .withBody("""[]""")
     }
 
     @Test

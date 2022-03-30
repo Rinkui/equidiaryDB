@@ -8,11 +8,20 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import java.util.UUID.randomUUID
 
 object DatabaseService {
     fun getUser(username: String) = transaction {
         EquidiaryUsers.select { EquidiaryUsers.userName eq username }
             .map { User(it[EquidiaryUsers.userName], it[EquidiaryUsers.password]) }
+    }
+
+    fun createUser(name: String, hash: ByteArray) = transaction {
+        EquidiaryUsers.insert {
+            it[uuid] = randomUUID().toString()
+            it[userName] = name
+            it[password] = hash
+        }
     }
 
     fun getHorse(horseName: String) = transaction {
@@ -25,6 +34,7 @@ object DatabaseService {
             .map { Horse(it[Horses.name], it[Horses.height], it[Horses.weight], it[Horses.uuid], it[Horses.birthDate], it[Horses.userUuid]) }
     }
 
+    //TODO delete
     fun getHorses(horseName: String) = transaction {
         Horses.select { Horses.name eq horseName }
             .toList()
