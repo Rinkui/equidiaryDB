@@ -1,27 +1,27 @@
+create table EQUIDIARY_USER
+(
+    uuid      varchar(50) primary key not null,
+    user_name varchar(100) unique     not null,
+    password  bytea                   not null
+);
+
 create table HORSE
 (
-    id         serial primary key not null,
-    horse_name varchar(150)       not null,
-    height     int                not null,
+    uuid       varchar(50) primary key not null,
+    horse_name varchar(150)            not null,
+    height     int                     not null,
     weight     int,
-    birth_date date               not null,
-    uuid       varchar(50)        not null
+    birth_date date                    not null,
+    userUuid   varchar(50),
+    FOREIGN KEY (userUuid) REFERENCES equidiary_user (uuid)
 );
 
 create table APPOINTMENT
 (
-    id               serial primary key not null,
-    appointment_date date               not null,
-    appointment_type varchar(50)        not null,
+    uuid             varchar(50) primary key not null,
+    appointment_date date                    not null,
+    appointment_type varchar(50)             not null,
     comment          varchar(512),
-    horseId          int,
-    uuid             varchar(50)        not null,
-    FOREIGN KEY (horseId) REFERENCES horse (id)
-);
-
-create table EQUIDIARY_USER
-(
-    user_name varchar(100) not null,
-    horseID   int,
-    FOREIGN KEY (horseID) REFERENCES horse (id)
+    horseUuid        varchar(50),
+    FOREIGN KEY (horseUuid) REFERENCES horse (uuid)
 );

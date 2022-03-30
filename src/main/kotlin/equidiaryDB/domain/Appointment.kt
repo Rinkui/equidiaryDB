@@ -9,5 +9,5 @@ data class Appointment @JsonCreator constructor(
     @JsonProperty("type") @get:JsonProperty val type: String,
     @JsonProperty("comment") @get:JsonProperty val comment: String,
     @JsonProperty("uuid") @get:JsonProperty val uuid: String,
-    @JsonProperty("horseId") @get:JsonProperty val horseId: Int,
+    @JsonProperty("horseUuid") @get:JsonProperty val horseUuid: String,
 )

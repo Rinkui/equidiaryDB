@@ -16,8 +16,9 @@ class AppointmentServiceTest : WebTestCase() {
 
     @Test
     fun getAppointmentNominal() {
-        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), randomUUID().toString())
-        givenAppointment(LocalDate.of(2022, 2, 18), "vet", "vaccins", 1, randomUUID().toString())
+        val horseUuid = randomUUID().toString()
+        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid, randomUUID().toString())
+        givenAppointment(LocalDate.of(2022, 2, 18), "vet", "vaccins", horseUuid, randomUUID().toString())
 
         whenGetAppointments("Fleur")
             .isOk()
@@ -26,7 +27,7 @@ class AppointmentServiceTest : WebTestCase() {
 
     @Test
     fun getEmptyAppointment() {
-        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), randomUUID().toString())
+        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), randomUUID().toString(), randomUUID().toString())
 
         whenGetAppointments("Fleur")
             .isOk()
@@ -35,42 +36,44 @@ class AppointmentServiceTest : WebTestCase() {
 
     @Test
     fun getUnknownHorse() {
-        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), randomUUID().toString())
-        givenAppointment(LocalDate.of(2022, 2, 18), "vet", "vaccins", 1, randomUUID().toString())
+        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), randomUUID().toString(), randomUUID().toString())
+        givenAppointment(LocalDate.of(2022, 2, 18), "vet", "vaccins", "1", randomUUID().toString())
 
         whenGetAppointments("Unknown").resourceNotFound()
     }
 
     @Test
     fun putAppointmentNominal() {
-        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), randomUUID().toString())
+        val horseUuid = randomUUID().toString()
+        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid, randomUUID().toString())
 
         whenPutAppointment("Fleur", """{"date":"2022-02-18","type":"podologue","comment":"parage","uuid":"${randomUUID()}","horseId":1}""")
 
-        val appointmentsResult = transaction { Appointments.select { Appointments.horseId eq 1 }.toList() }
+        val appointmentsResult = transaction { Appointments.select { Appointments.horseUuid eq horseUuid }.toList() }
         assertEquals(1, appointmentsResult.size)
         val appointmentResult = appointmentsResult[0]
         assertEquals(LocalDate.of(2022, 2, 18), appointmentResult[Appointments.date])
         assertEquals("parage", appointmentResult[Appointments.comment])
         assertEquals("podologue", appointmentResult[Appointments.type])
-        assertEquals(1, appointmentResult[Appointments.horseId].value)
+        assertEquals(horseUuid, appointmentResult[Appointments.horseUuid])
     }
 
     @Test
     fun editAppointment() {
-        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), randomUUID().toString())
-        val appUuid = randomUUID().toString()
-        givenAppointment(LocalDate.of(2022, 2, 18), "vet", "vaccins", 1, appUuid)
+        val horseUuid = randomUUID().toString()
+        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid, randomUUID().toString())
+        val appointmentUuid = randomUUID().toString()
+        givenAppointment(LocalDate.of(2022, 2, 18), "vet", "vaccins", "1", appointmentUuid)
 
-        whenPostAppointment("Fleur", """{"date":"2022-02-18","type":"podologue","comment":"parage","uuid":"$appUuid","horseId":1}""")
+        whenPostAppointment("Fleur", """{"date":"2022-02-18","type":"podologue","comment":"parage","uuid":"$appointmentUuid","horseId":1}""")
 
-        val appointmentsResult = transaction { Appointments.select { Appointments.horseId eq 1 }.toList() }
+        val appointmentsResult = transaction { Appointments.select { Appointments.horseUuid eq appointmentUuid }.toList() }
         assertEquals(1, appointmentsResult.size)
         val appointmentResult = appointmentsResult[0]
         assertEquals(LocalDate.of(2022, 2, 18), appointmentResult[Appointments.date])
         assertEquals("parage", appointmentResult[Appointments.comment])
         assertEquals("podologue", appointmentResult[Appointments.type])
-        assertEquals(1, appointmentResult[Appointments.horseId].value)
+        assertEquals(horseUuid, appointmentResult[Appointments.horseUuid])
     }
 
     // WHEN

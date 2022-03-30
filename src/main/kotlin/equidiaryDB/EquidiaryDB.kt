@@ -17,6 +17,10 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.flywaydb.core.Flyway
 
+//ojuo2V7dG5I066s8uFL31tPmYhj7X3ICfA1emu5uPuMLCuuYpRKWRc3hxELomaFbKvxebEVKY7gJkFLePufpbXqNcczNzT5iBYwQAZncniFcrqAqPkqSqksBM8zkL5XCoAbzOmKpsT5pr7geRVIVU1J7kEahd2IeKpVmm2LW0o
+//encoded :
+//b2p1bzJWN2RHNUkwNjZzOHVGTDMxdFBtWWhqN1gzSUNmQTFlbXU1dVB1TUxDdXVZcFJLV1JjM2h4RUxvbWFGYkt2eGViRVZLWTdnSmtGTGVQdWZwYlhxTmNjek56VDVpQll3UUFabmNuaUZjcnFBcVBrcVNxa3NCTTh6a0w1WENvQWJ6T21LcHNUNXByN2dlUlZJVlUxSjdrRWFoZDJJZUtwVm1tMkxXMG8=
+
 object EquidiaryDB {
     private const val EQUIDIARYDB_PORT = 7001
     private lateinit var app: Javalin
@@ -73,7 +77,7 @@ object EquidiaryDB {
                 }
                 put(HorseService()::createHorse)
             }
-            post("/login", LoginService())
+            post("/login", LoginService()::login)
         }
     }
 }

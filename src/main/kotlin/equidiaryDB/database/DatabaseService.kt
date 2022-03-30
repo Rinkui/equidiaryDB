@@ -2,6 +2,7 @@ package equidiaryDB.database
 
 import equidiaryDB.domain.Appointment
 import equidiaryDB.domain.Horse
+import equidiaryDB.domain.User
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
@@ -9,21 +10,25 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 
 object DatabaseService {
+    fun getUser(username: String) = transaction {
+        EquidiaryUsers.select { EquidiaryUsers.userName eq username }
+            .map { User(it[EquidiaryUsers.userName], it[EquidiaryUsers.password]) }
+    }
 
     fun getHorse(horseName: String) = transaction {
         Horses.select { Horses.name eq horseName }
-            .map { Horse(it[Horses.name], it[Horses.height], it[Horses.weight], it[Horses.uuid], it[Horses.birthDate]) }
+            .map { Horse(it[Horses.name], it[Horses.height], it[Horses.weight], it[Horses.uuid], it[Horses.birthDate], it[Horses.userUuid]) }
     }
 
     fun getHorses() = transaction {
         Horses.selectAll()
-            .map { Horse(it[Horses.name], it[Horses.height], it[Horses.weight], it[Horses.uuid], it[Horses.birthDate]) }
+            .map { Horse(it[Horses.name], it[Horses.height], it[Horses.weight], it[Horses.uuid], it[Horses.birthDate], it[Horses.userUuid]) }
     }
 
     fun getHorses(horseName: String) = transaction {
         Horses.select { Horses.name eq horseName }
             .toList()
-            .map { Horse(it[Horses.name], it[Horses.height], it[Horses.weight], it[Horses.uuid], it[Horses.birthDate]) }
+            .map { Horse(it[Horses.name], it[Horses.height], it[Horses.weight], it[Horses.uuid], it[Horses.birthDate], it[Horses.userUuid]) }
     }
 
     fun insertHorse(horse: Horse) = transaction {
@@ -33,6 +38,7 @@ object DatabaseService {
             it[weight] = horse.weight
             it[uuid] = horse.uuid
             it[birthDate] = horse.birthDate
+            it[userUuid] = horse.userUuid
         }
     }
 
@@ -42,6 +48,7 @@ object DatabaseService {
             it[height] = horse.height
             it[weight] = horse.weight
             it[birthDate] = horse.birthDate
+            it[userUuid] = horse.userUuid
         }
     }
 
@@ -49,7 +56,13 @@ object DatabaseService {
         (Appointments leftJoin Horses)
             .select { Horses.name eq horseName }
             .toList()
-            .map { Appointment(it[Appointments.date], it[Appointments.type], it[Appointments.comment], it[Appointments.uuid], it[Appointments.horseId].value) }
+            .map {
+                Appointment(it[Appointments.date],
+                    it[Appointments.type],
+                    it[Appointments.comment],
+                    it[Appointments.uuid],
+                    it[Appointments.horseUuid])
+            }
     }
 
     fun insertAppointment(appointment: Appointment) = transaction {
@@ -57,7 +70,7 @@ object DatabaseService {
             it[date] = appointment.date
             it[type] = appointment.type
             it[comment] = appointment.comment
-            it[horseId] = appointment.horseId
+            it[horseUuid] = appointment.horseUuid
         }
     }
 
@@ -66,7 +79,7 @@ object DatabaseService {
             it[date] = appointment.date
             it[type] = appointment.type
             it[comment] = appointment.comment
-            it[horseId] = appointment.horseId
+            it[horseUuid] = appointment.horseUuid
         }
     }
 }

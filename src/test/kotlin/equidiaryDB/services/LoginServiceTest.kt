@@ -1,69 +1,44 @@
 package equidiaryDB.services
 
-import com.mashape.unirest.http.HttpResponse
 import com.mashape.unirest.http.Unirest
-import equidiaryDB.EquidiaryDB.start
-import equidiaryDB.EquidiaryDB.stop
-import equidiaryDB.GenericTestCase
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeEach
+import com.toxicbakery.bcrypt.Bcrypt
+import equidiaryDB.WebTestCase
+import equidiaryDB.utils.bodyLike
+import equidiaryDB.utils.givenUser
+import equidiaryDB.utils.isForbidden
+import equidiaryDB.utils.isOk
 import org.junit.jupiter.api.Test
+import java.util.*
 
-class LoginServiceTest : GenericTestCase() {
-    @BeforeEach
-    fun setup() {
-        start()
-    }
-
-    @AfterEach
-    fun teardown() {
-        stop()
-        response = null
-    }
-
+class LoginServiceTest : WebTestCase() {
     @Test
     fun loginNominal() {
-        val loginBody = givenUserWithPasswordBody("marie", "marie")
-        whenLogin(loginBody)
-        thenResponseIs("Hello marie")
+        givenUser(UUID.randomUUID().toString(), "marie", Bcrypt.hash("marie", 8))
+
+        whenLogin("""{"username":"marie","password":"marie"}""")
+            .isOk()
+            .bodyLike(Regex("""\{"jwt":".{151}"\}"""))
     }
 
     @Test
     fun loginWithNonExistingUsernameInDB() {
-        val loginBody = givenUserWithPasswordBody("wrong", "marie")
-        whenLogin(loginBody)
-        thenResponseIs("Wrong username or password")
+
+        whenLogin("""{"username":"marie","password":"marie"}""")
+            .isForbidden()
     }
 
     @Test
     fun loginWithWrongPasswordInDB() {
-        val loginBody = givenUserWithPasswordBody("wrong", "marie")
-        whenLogin(loginBody)
-        thenResponseIs("Wrong username or password")
-    }
+        givenUser(UUID.randomUUID().toString(), "marie", Bcrypt.hash("marie", 8))
 
-    // GIVEN
-    private fun givenUserWithPasswordBody(userName: String,
-                                          password: String): String {
-        return "{\"username\":$userName;\"password\":$password}"
+        whenLogin("""{"username":"marie","password":"wrongPassword"}""")
+            .isForbidden()
     }
 
     // WHEN
-    private fun whenLogin(loginBody: String) {
-        response = Unirest.post(EQUIDIARYDB_PATH + LOGIN_ENDPOINT).body(loginBody).asString()
-    }
-
-    // THEN
-    private fun thenResponseIs(expected: String) {
-        Assertions.assertEquals(expected, response!!.body)
-    }
+    private fun whenLogin(loginBody: String) = Unirest.post("$EQUIDIARYDB_PATH$LOGIN_ENDPOINT").body(loginBody).asString()
 
     companion object {
-        private const val EQUIDIARYDB_PORT = "7001"
-        private const val EQUIDIARYDB_IP = "localhost"
-        private const val EQUIDIARYDB_PATH = "http://$EQUIDIARYDB_IP:$EQUIDIARYDB_PORT"
         private const val LOGIN_ENDPOINT = "/login"
-        private var response: HttpResponse<String>? = null
     }
 }

@@ -1,5 +1,6 @@
 package equidiaryDB.services
 
+import equidiaryDB.EquidiaryDB.equiLogger
 import equidiaryDB.JsonUtils
 import equidiaryDB.database.DatabaseService
 import equidiaryDB.domain.Horse
@@ -26,6 +27,7 @@ class HorseService : Handler {
         val horse: Horse = try {
             JsonUtils.fromJson(context.body(), Horse::class.java)
         } catch (e: Throwable) {
+            equiLogger.fatal(e.printStackTrace())
             context.status(400)
             return
         }
@@ -44,6 +46,7 @@ class HorseService : Handler {
         val updatedHorse = try {
             JsonUtils.fromJson(context.body(), Horse::class.java)
         } catch (e: Throwable) {
+            equiLogger.fatal(e.printStackTrace())
             context.status(400)
             return
         }

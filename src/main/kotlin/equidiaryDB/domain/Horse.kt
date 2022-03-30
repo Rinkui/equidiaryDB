@@ -10,4 +10,5 @@ data class Horse @JsonCreator constructor(
     @JsonProperty("weight") @get:JsonProperty val weight: Int?,
     @JsonProperty("uuid") @get:JsonProperty val uuid: String,
     @JsonProperty("birthDate") @get:JsonProperty val birthDate: LocalDate,
+    @JsonProperty("userUuid") @get:JsonProperty val userUuid: String,
 )
