@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import equidiaryDB.config.DBConfig
 import equidiaryDB.config.NULL_CONFIG
 import equidiaryDB.config.getDBConfig
+import equidiaryDB.security.TokenProvider
 import equidiaryDB.services.AppointmentService
 import equidiaryDB.services.HorseService
 import equidiaryDB.services.UserService
@@ -20,6 +21,7 @@ import org.flywaydb.core.Flyway
 object EquidiaryDB {
     private const val EQUIDIARYDB_PORT = 7001
     private lateinit var app: Javalin
+    val tokenProvider = TokenProvider()
     val equiLogger: Logger = LogManager.getLogger()
 
     @JvmStatic
@@ -60,7 +62,7 @@ object EquidiaryDB {
     private fun createEndPoints() {
         app.before("/horse/**") { context ->
             val header = context.header("Authorization")
-            if (header.isNullOrEmpty()) {
+            if (header.isNullOrEmpty() || !tokenProvider.isTokenValid(header.split(" ")[1])) {
                 throw ForbiddenResponse()
             }
         }

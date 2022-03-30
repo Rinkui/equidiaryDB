@@ -24,5 +24,8 @@ fun <T> HttpResponse<T>.isOk(): HttpResponse<T> {
     return this
 }
 
-fun HttpRequestWithBody.withDefaultHeaders() = header("Authorization", "Bearer")!! //TODO mettre un token
-fun GetRequest.withDefaultHeaders() = header("Authorization", "Bearer")!! //TODO mettre un token
+val token =
+    "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYXJpZSIsImV4cCI6NDAwMTY0ODY1ODAyMn0.A8dgi0B8zuCS9ZITxy47lYfajUnMYZxEM5E5j5MrLGLxB9pX8zQ27boCIkfuWCAJfoVc9S1gz_ziTTmUh03V4g"
+
+fun HttpRequestWithBody.withDefaultHeaders() = header("Authorization", "Bearer $token")!!
+fun GetRequest.withDefaultHeaders() = header("Authorization", "Bearer $token")!!

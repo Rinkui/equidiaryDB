@@ -1,8 +1,8 @@
 package equidiaryDB.services
 
 import com.toxicbakery.bcrypt.Bcrypt
+import equidiaryDB.EquidiaryDB.tokenProvider
 import equidiaryDB.database.DatabaseService
-import equidiaryDB.security.TokenProvider
 import io.javalin.http.Context
 import io.javalin.http.Handler
 import org.json.JSONObject
@@ -21,7 +21,7 @@ class UserService : Handler {
             context.status(503)
         }
 
-        context.json(TokenProvider().createToken(username))
+        context.json(tokenProvider.createToken(username))
     }
 
     fun createUser(context: Context) {
