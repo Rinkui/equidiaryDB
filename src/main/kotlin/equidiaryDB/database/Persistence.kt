@@ -22,8 +22,20 @@ object Appointments : Table("appointment") {
     //chemin sur le serveur Uuid UUID.randomUUID().toString()
 }
 
-object Users : Table("owner") {
+object Users : Table("equidiary_user") {
     val uuid = varchar("uuid", 50).uniqueIndex()
     val userName = varchar("user_name", 100).uniqueIndex()
     val password = binary("password", 100)
+}
+
+object Professionals : Table("professional") {
+    val uuid = varchar("uuid", 50).uniqueIndex()
+    val firstName = varchar("first_name", 50)
+    val lastName = varchar("last_name", 50)
+    val profession = varchar("profession", 50)
+}
+
+object HorseProfessionals : Table("horse_professional") {
+    val proUuid = varchar("pro_uuid", 50).uniqueIndex().references(Professionals.uuid)
+    val horseUuid = varchar("horse_uuid", 50).uniqueIndex().references(Appointments.uuid)
 }

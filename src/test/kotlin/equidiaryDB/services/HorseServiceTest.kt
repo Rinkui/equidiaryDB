@@ -14,7 +14,7 @@ import java.time.LocalDate
 import java.util.UUID.randomUUID
 
 class HorseServiceTest : WebTestCase() {
-    private val HORSE_ENDPOINT = "/horse"
+    private val HORSE_ENDPOINT = "/$username/horse"
     private var userUuid: String = ""
 
     @BeforeEach

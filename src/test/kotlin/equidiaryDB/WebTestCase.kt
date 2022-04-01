@@ -7,8 +7,10 @@ abstract class WebTestCase : GenericTestCase() {
     companion object {
         private const val EQUIDIARYDB_PORT = "7001"
         private const val EQUIDIARYDB_IP = "localhost"
-        const val EQUIDIARYDB_PATH = "http://$EQUIDIARYDB_IP:$EQUIDIARYDB_PORT"
+        const val EQUIDIARYDB_PATH = "http://$EQUIDIARYDB_IP:$EQUIDIARYDB_PORT/user"
     }
+
+    protected val username = "marie"
 
     @BeforeEach
     open fun setup() {

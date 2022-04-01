@@ -12,6 +12,7 @@ class AppointmentService : Handler {
     fun getAppointments(context: Context) {
         val horses = DatabaseService.getHorses(context.pathParam("horseName"))
         if (horses.isEmpty()) {
+            equiLogger.error("None horse were found named : ${context.pathParam("horseName")}")
             context.status(404)
             return
         }
@@ -23,6 +24,7 @@ class AppointmentService : Handler {
     fun createAppointment(context: Context) {
         val horses = DatabaseService.getHorses(context.pathParam("horseName"))
         if (horses.isEmpty()) {
+            equiLogger.error("None horse were found named : ${context.pathParam("horseName")}")
             context.status(404)
             return
         }
@@ -41,6 +43,7 @@ class AppointmentService : Handler {
     fun updateAppointment(context: Context) {
         val horses = DatabaseService.getHorses(context.pathParam("horseName"))
         if (horses.isEmpty()) {
+            equiLogger.error("None horse were found named : ${context.pathParam("horseName")}")
             context.status(404)
             return
         }

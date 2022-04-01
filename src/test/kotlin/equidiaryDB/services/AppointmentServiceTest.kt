@@ -14,14 +14,14 @@ import java.time.LocalDate
 import java.util.UUID.randomUUID
 
 class AppointmentServiceTest : WebTestCase() {
-    private val APPOINTMENT_ENDPOINT = "/horse/{horseName}/appointments"
+    private val APPOINTMENT_ENDPOINT = "/$username/horse/{horseName}/appointments"
     private var userUuid: String = ""
 
     @BeforeEach
     override fun setup() {
         super.setup()
         userUuid = randomUUID().toString()
-        givenUser(userUuid, "marie", Bcrypt.hash("marie", 8))
+        givenUser(userUuid, username, Bcrypt.hash("marie", 8))
     }
 
     @Test

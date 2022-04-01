@@ -1,4 +1,4 @@
-create table owner
+create table equidiary_user
 (
     uuid      varchar(50) primary key not null,
     user_name varchar(100) unique     not null,
@@ -13,7 +13,7 @@ create table horse
     weight     int,
     birth_date date                    not null,
     userUuid   varchar(50),
-    FOREIGN KEY (userUuid) REFERENCES owner (uuid)
+    FOREIGN KEY (userUuid) REFERENCES equidiary_user (uuid)
 );
 
 create table appointment
@@ -24,4 +24,22 @@ create table appointment
     comment          varchar(512),
     horseUuid        varchar(50),
     FOREIGN KEY (horseUuid) REFERENCES horse (uuid)
+);
+
+create table professional
+(
+    uuid       varchar(50) primary key not null,
+    first_name varchar(50)             not null,
+    last_name  varchar(50)             not null,
+    profession varchar(50)             not null,
+    userUuid   varchar(50)             not null,
+    FOREIGN KEY (userUuid) REFERENCES equidiary_user (uuid)
+);
+
+create table horse_professional
+(
+    pro_uuid   varchar(50) not null,
+    horse_uuid varchar(50) not null,
+    FOREIGN KEY (pro_uuid) REFERENCES professional (uuid),
+    FOREIGN KEY (horse_uuid) REFERENCES horse (uuid)
 );

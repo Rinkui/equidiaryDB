@@ -60,26 +60,28 @@ object EquidiaryDB {
     }
 
     private fun createEndPoints() {
-        app.before("/horse/**") { context ->
+        app.before("/user/**") { context ->
             val header = context.header("Authorization")
             if (header.isNullOrEmpty() || !tokenProvider.isTokenValid(header.split(" ")[1])) {
                 throw ForbiddenResponse()
             }
         }
         app.routes {
-            path("horse") {
-                path("{horseName}") {
-                    get(HorseService()::getHorse)
-                    post(HorseService()::updateHorse)
-                    path("appointments") {
-                        get(AppointmentService()::getAppointments)
-                        put(AppointmentService()::createAppointment)
-                        post(AppointmentService()::updateAppointment)
+            path("user") {
+                path("{userName}") {
+                    path("horse") {
+                        path("{horseName}") {
+                            get(HorseService()::getHorse)
+                            post(HorseService()::updateHorse)
+                            path("appointments") {
+                                get(AppointmentService()::getAppointments)
+                                put(AppointmentService()::createAppointment)
+                                post(AppointmentService()::updateAppointment)
+                            }
+                        }
+                        put(HorseService()::createHorse)
                     }
                 }
-                put(HorseService()::createHorse)
-            }
-            path("login") {
                 post(UserService()::login)
                 put(UserService()::createUser)
             }

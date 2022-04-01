@@ -55,10 +55,7 @@ class UserServiceTest : WebTestCase() {
     }
 
     // WHEN
-    private fun whenLogin(loginBody: String) = Unirest.post("$EQUIDIARYDB_PATH$LOGIN_ENDPOINT").body(loginBody).asString()
-    private fun whenCreateUser(loginBody: String) = Unirest.put("$EQUIDIARYDB_PATH$LOGIN_ENDPOINT").body(loginBody).asString()
+    private fun whenLogin(loginBody: String) = Unirest.post("$EQUIDIARYDB_PATH").body(loginBody).asString()
+    private fun whenCreateUser(loginBody: String) = Unirest.put("$EQUIDIARYDB_PATH").body(loginBody).asString()
 
-    companion object {
-        private const val LOGIN_ENDPOINT = "/login"
-    }
 }
