@@ -30,16 +30,17 @@ class AppointmentServiceTest : WebTestCase() {
         givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid, userUuid)
         givenAppointment(LocalDate.of(2022, 2, 18), "vet", "vaccins", horseUuid, randomUUID().toString())
 
-        whenGetAppointments("Fleur")
+        whenGetAppointments(horseUuid)
             .isOk()
             .bodyLike(Regex("""\[\{"date":"2022-02-18","type":"vet","comment":"vaccins","uuid":".{36}","horseUuid":".{36}"\}\]"""))
     }
 
     @Test
     fun getEmptyAppointment() {
-        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), randomUUID().toString(), userUuid)
+        val horseUuid = randomUUID().toString()
+        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid, userUuid)
 
-        whenGetAppointments("Fleur")
+        whenGetAppointments(horseUuid)
             .isOk()
             .withBody("""[]""")
     }
@@ -58,7 +59,7 @@ class AppointmentServiceTest : WebTestCase() {
         val horseUuid = randomUUID().toString()
         givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid, userUuid)
 
-        whenPutAppointment("Fleur", """{"date":"2022-02-18","type":"podologue","comment":"parage","uuid":"${randomUUID()}","horseUuid":"$horseUuid"}""")
+        whenPutAppointment(horseUuid, """{"date":"2022-02-18","type":"podologue","comment":"parage","uuid":"${randomUUID()}","horseUuid":"$horseUuid"}""")
 
         val appointmentsResult = transaction { Appointments.select { Appointments.horseUuid eq horseUuid }.toList() }
         assertEquals(1, appointmentsResult.size)
@@ -76,7 +77,7 @@ class AppointmentServiceTest : WebTestCase() {
         val appointmentUuid = randomUUID().toString()
         givenAppointment(LocalDate.of(2022, 2, 18), "vet", "vaccins", horseUuid, appointmentUuid)
 
-        whenPostAppointment("Fleur", """{"date":"2022-02-18","type":"podologue","comment":"parage","uuid":"$appointmentUuid","horseUuid":"$horseUuid"}""")
+        whenPostAppointment(horseUuid, """{"date":"2022-02-18","type":"podologue","comment":"parage","uuid":"$appointmentUuid","horseUuid":"$horseUuid"}""")
 
         val appointmentsResult = transaction { Appointments.select { Appointments.uuid eq appointmentUuid }.toList() }
         assertEquals(1, appointmentsResult.size)

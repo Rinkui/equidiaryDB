@@ -26,9 +26,10 @@ class HorseServiceTest : WebTestCase() {
 
     @Test
     fun getHorseNominal() {
-        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), randomUUID().toString(), userUuid)
+        val horseUuid = randomUUID().toString()
+        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid, userUuid)
 
-        whenGetHorse("Fleur")
+        whenGetHorse(horseUuid)
             .isOk()
             .bodyLike(Regex("""\{"name":"Fleur","height":160,"weight":500,"uuid":".{36}","birthDate":"2015-04-22","userUuid":".{36}"\}"""))
     }
@@ -47,13 +48,13 @@ class HorseServiceTest : WebTestCase() {
 
     @Test
     fun postHorseNominal() {
-        val horseUuid = randomUUID()
-        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid.toString(), userUuid)
+        val horseUuid = randomUUID().toString()
+        givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid, userUuid)
 
-        whenPostHorse("Fleur", """{"name":"Fleur","height":160,"weight":450,"uuid":"$horseUuid","birthDate":"2015-04-22","userUuid":"$userUuid"}""")
+        whenPostHorse(horseUuid, """{"name":"Fleur","height":160,"weight":450,"uuid":"$horseUuid","birthDate":"2015-04-22","userUuid":"$userUuid"}""")
             .isOk()
 
-        val horseResult = transaction { Horses.select { Horses.name eq "Fleur" }.toList()[0] }
+        val horseResult = transaction { Horses.select { Horses.uuid eq horseUuid }.toList()[0] }
         assertEquals("Fleur", horseResult[Horses.name])
         assertEquals(160, horseResult[Horses.height])
         assertEquals(450, horseResult[Horses.weight])

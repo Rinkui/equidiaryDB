@@ -23,7 +23,7 @@ object DatabaseService {
     }
 
     fun getHorse(horseName: String) = transaction {
-        Horses.select { Horses.name eq horseName }
+        Horses.select { Horses.uuid eq horseName }
             .map { Horse(it[Horses.name], it[Horses.height], it[Horses.weight], it[Horses.uuid], it[Horses.birthDate], it[Horses.userUuid]) }
     }
 
@@ -34,7 +34,7 @@ object DatabaseService {
 
     //TODO delete
     fun getHorses(horseName: String) = transaction {
-        Horses.select { Horses.name eq horseName }
+        Horses.select { Horses.uuid eq horseName }
             .toList()
             .map { Horse(it[Horses.name], it[Horses.height], it[Horses.weight], it[Horses.uuid], it[Horses.birthDate], it[Horses.userUuid]) }
     }
@@ -62,7 +62,7 @@ object DatabaseService {
 
     fun getAppointments(horseName: String) = transaction {
         (Appointments leftJoin Horses)
-            .select { Horses.name eq horseName }
+            .select { Horses.uuid eq horseName }
             .toList()
             .map {
                 Appointment(it[Appointments.date],
