@@ -71,7 +71,7 @@ object EquidiaryDB {
             path("user") {
                 path("{userUuid}") {
                     path("horse") {
-                        path("{horseName}") { //TODO changer en uuid
+                        path("{horseUuid}") { //TODO changer en uuid
                             get(HorseService()::getHorse)
                             post(HorseService()::updateHorse)
                             path("appointments") {

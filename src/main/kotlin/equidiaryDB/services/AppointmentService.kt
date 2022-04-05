@@ -10,21 +10,21 @@ import io.javalin.http.Handler
 class AppointmentService : Handler {
 
     fun getAppointments(context: Context) {
-        val horses = DatabaseService.getHorses(context.pathParam("horseName"))
+        val horses = DatabaseService.getHorses(context.getHorseUuid())
         if (horses.isEmpty()) {
-            equiLogger.error("None horse were found named : ${context.pathParam("horseName")}")
+            equiLogger.error("None horse were found named : ${context.getHorseUuid()}")
             context.status(404)
             return
         }
 
-        val appointments = DatabaseService.getAppointments(context.pathParam("horseName"))
+        val appointments = DatabaseService.getAppointments(context.getHorseUuid())
         context.json(appointments)
     }
 
     fun createAppointment(context: Context) {
-        val horses = DatabaseService.getHorses(context.pathParam("horseName"))
+        val horses = DatabaseService.getHorses(context.getHorseUuid())
         if (horses.isEmpty()) {
-            equiLogger.error("None horse were found named : ${context.pathParam("horseName")}")
+            equiLogger.error("None horse were found named : ${context.getHorseUuid()}")
             context.status(404)
             return
         }
@@ -41,9 +41,9 @@ class AppointmentService : Handler {
     }
 
     fun updateAppointment(context: Context) {
-        val horses = DatabaseService.getHorses(context.pathParam("horseName"))
+        val horses = DatabaseService.getHorses(context.getHorseUuid())
         if (horses.isEmpty()) {
-            equiLogger.error("None horse were found named : ${context.pathParam("horseName")}")
+            equiLogger.error("None horse were found named : ${context.getHorseUuid()}")
             context.status(404)
             return
         }
@@ -59,6 +59,6 @@ class AppointmentService : Handler {
         DatabaseService.updateAppointment(appointment)
         context.status(200)
     }
-
+    
     override fun handle(ctx: Context) {}
 }
