@@ -31,9 +31,7 @@ create table professional
     uuid       varchar(50) primary key not null,
     first_name varchar(50)             not null,
     last_name  varchar(50)             not null,
-    profession varchar(50)             not null,
-    userUuid   varchar(50)             not null,
-    FOREIGN KEY (userUuid) REFERENCES equidiary_user (uuid)
+    profession varchar(50)             not null
 );
 
 create table horse_professional
@@ -42,4 +40,12 @@ create table horse_professional
     horse_uuid varchar(50) not null,
     FOREIGN KEY (pro_uuid) REFERENCES professional (uuid),
     FOREIGN KEY (horse_uuid) REFERENCES horse (uuid)
+);
+
+create table user_professional
+(
+    pro_uuid  varchar(50) not null,
+    user_uuid varchar(50) not null,
+    FOREIGN KEY (pro_uuid) REFERENCES professional (uuid),
+    FOREIGN KEY (user_uuid) REFERENCES equidiary_user (uuid)
 );

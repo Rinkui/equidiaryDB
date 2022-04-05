@@ -1,9 +1,7 @@
 package equidiaryDB
 
 import equidiaryDB.config.ConfigurationFile
-import equidiaryDB.database.Appointments
-import equidiaryDB.database.Horses
-import equidiaryDB.database.Users
+import equidiaryDB.database.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -35,6 +33,9 @@ open class GenericTestCase {
     @AfterEach
     open fun tearDown() {
         transaction {
+            HorseProfessionals.deleteAll()
+            UserProfessionals.deleteAll()
+            Professionals.deleteAll()
             Appointments.deleteAll()
             Horses.deleteAll()
             Users.deleteAll()

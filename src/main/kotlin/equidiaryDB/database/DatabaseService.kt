@@ -2,12 +2,10 @@ package equidiaryDB.database
 
 import equidiaryDB.domain.Appointment
 import equidiaryDB.domain.Horse
+import equidiaryDB.domain.Professional
 import equidiaryDB.domain.User
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 import java.util.UUID.randomUUID
 
 object DatabaseService {
@@ -91,5 +89,19 @@ object DatabaseService {
             it[comment] = appointment.comment
             it[horseUuid] = appointment.horseUuid
         }
+    }
+
+    fun getProfessional(userName: String) = transaction {
+        UserProfessionals
+            .join(Professionals, JoinType.RIGHT) { UserProfessionals.proUuid eq Professionals.uuid }
+            .select { UserProfessionals.userUuid eq userName }
+            .toList()
+            .map {
+                Professional(
+                    it[Professionals.uuid],
+                    it[Professionals.firstName],
+                    it[Professionals.lastName],
+                    it[Professionals.profession])
+            }
     }
 }

@@ -39,3 +39,8 @@ object HorseProfessionals : Table("horse_professional") {
     val proUuid = varchar("pro_uuid", 50).uniqueIndex().references(Professionals.uuid)
     val horseUuid = varchar("horse_uuid", 50).uniqueIndex().references(Appointments.uuid)
 }
+
+object UserProfessionals : Table("user_professional") {
+    val proUuid = varchar("pro_uuid", 50).uniqueIndex().references(Professionals.uuid)
+    val userUuid = varchar("user_uuid", 50).uniqueIndex().references(Users.uuid)
+}
