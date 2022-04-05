@@ -9,7 +9,7 @@ import equidiaryDB.config.getDBConfig
 import equidiaryDB.security.TokenProvider
 import equidiaryDB.services.AppointmentService
 import equidiaryDB.services.HorseService
-import equidiaryDB.services.ProfessionnalService
+import equidiaryDB.services.ProfessionalsService
 import equidiaryDB.services.UserService
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.*
@@ -71,7 +71,7 @@ object EquidiaryDB {
             path("user") {
                 path("{userUuid}") {
                     path("horse") {
-                        path("{horseUuid}") { //TODO changer en uuid
+                        path("{horseUuid}") {
                             get(HorseService()::getHorse)
                             post(HorseService()::updateHorse)
                             path("appointments") {
@@ -82,8 +82,8 @@ object EquidiaryDB {
                         }
                         put(HorseService()::createHorse)
                     }
-                    path("professional") {
-                        get(ProfessionnalService()::getProfessionals)
+                    path("professionals") {
+                        get(ProfessionalsService()::getProfessionals)
                     }
                 }
                 post(UserService()::login)

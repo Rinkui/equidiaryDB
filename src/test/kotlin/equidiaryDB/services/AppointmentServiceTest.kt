@@ -51,7 +51,7 @@ class AppointmentServiceTest : WebTestCase() {
         givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), horseUuid, userUuid)
         givenAppointment(LocalDate.of(2022, 2, 18), "vet", "vaccins", horseUuid, randomUUID().toString())
 
-        whenGetAppointments("Unknown").resourceNotFound()
+        whenGetAppointments("Unknown").isResourceNotFound()
     }
 
     @Test

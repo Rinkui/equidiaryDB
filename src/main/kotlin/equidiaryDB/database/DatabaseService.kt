@@ -14,6 +14,11 @@ object DatabaseService {
             .map { User(it[Users.userName], it[Users.password]) }
     }
 
+    fun getUserByUuid(userUuid: String) = transaction {
+        Users.select { Users.uuid eq userUuid }
+            .map { User(it[Users.userName], it[Users.password]) }
+    }
+
     fun createUser(name: String, hash: ByteArray) = transaction {
         Users.insert {
             it[uuid] = randomUUID().toString()

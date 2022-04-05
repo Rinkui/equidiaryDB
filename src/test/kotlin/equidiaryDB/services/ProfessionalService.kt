@@ -27,5 +27,12 @@ class ProfessionalService : WebTestCase() {
             .bodyLike(Regex("""\{"uuid":".{36}","firstName":"Audrey","lastName":"Bur","profession":"vet"\}"""))
     }
 
-    private fun whenGetProfessionals() = Unirest.get("$EQUIDIARYDB_PATH/$userUuid/professional").withDefaultHeaders().asString()
+    @Test
+    fun getProfessionalByUnknownUser() {
+        whenGetProfessionals("Unknown")
+            .isResourceNotFound()
+    }
+
+    private fun whenGetProfessionals(user: String = userUuid) = Unirest.get("$EQUIDIARYDB_PATH/$user/professionals").withDefaultHeaders().asString()
+    private fun whenPutProfessionals(proBody: String) = Unirest.get("$EQUIDIARYDB_PATH/$userUuid/professionals").withDefaultHeaders().asString()
 }

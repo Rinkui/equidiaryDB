@@ -12,7 +12,7 @@ fun <T> HttpResponse<T>.isBadRequest(): HttpResponse<T> {
 }
 
 fun <T> HttpResponse<T>.isForbidden() = assertEquals(503, code)
-fun <T> HttpResponse<T>.resourceNotFound() = assertEquals(404, code)
+fun <T> HttpResponse<T>.isResourceNotFound() = assertEquals(404, code)
 fun HttpResponse<String>.withBody(body: String) = assertEquals(body, this.body)
 fun HttpResponse<String>.bodyLike(body: Regex) {
     println(this.body)

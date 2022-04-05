@@ -65,7 +65,7 @@ class HorseServiceTest : WebTestCase() {
     fun getUnknownHorse() {
         givenHorse("Fleur", 160, 500, LocalDate.of(2015, 4, 22), randomUUID().toString(), userUuid)
 
-        whenGetHorse("Unknown").resourceNotFound()
+        whenGetHorse("Unknown").isResourceNotFound()
     }
 
     @Test
