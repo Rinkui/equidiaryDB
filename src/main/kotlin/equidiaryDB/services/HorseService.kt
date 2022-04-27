@@ -1,7 +1,7 @@
 package equidiaryDB.services
 
 import equidiaryDB.EquidiaryDB.equiLogger
-import equidiaryDB.JsonUtils
+import equidiaryDB.JsonUtils.fromJson
 import equidiaryDB.database.DatabaseService
 import equidiaryDB.domain.Horse
 import io.javalin.http.Context
@@ -25,7 +25,7 @@ class HorseService : Handler {
 
     fun createHorse(context: Context) {
         val horse: Horse = try {
-            JsonUtils.fromJson(context.body(), Horse::class.java)
+            fromJson(context.body(), Horse::class.java)
         } catch (e: Throwable) {
             equiLogger.fatal(e.printStackTrace())
             context.status(400)
@@ -44,7 +44,7 @@ class HorseService : Handler {
         }
 
         val updatedHorse = try {
-            JsonUtils.fromJson(context.body(), Horse::class.java)
+            fromJson(context.body(), Horse::class.java)
         } catch (e: Throwable) {
             equiLogger.fatal(e.printStackTrace())
             context.status(400)

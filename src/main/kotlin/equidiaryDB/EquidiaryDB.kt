@@ -83,7 +83,9 @@ object EquidiaryDB {
                         put(HorseService()::createHorse)
                     }
                     path("professionals") {
-                        get(ProfessionalsService()::getProfessionals)
+                        get(ProfessionalsService()::getUserProfessionals)
+                        put(ProfessionalsService()::createUserProfessionals)
+                        post(ProfessionalsService()::updateUserProfessionals)
                     }
                 }
                 post(UserService()::login)

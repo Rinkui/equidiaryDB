@@ -27,8 +27,8 @@ object DatabaseService {
         }
     }
 
-    fun getHorse(horseName: String) = transaction {
-        Horses.select { Horses.uuid eq horseName }
+    fun getHorse(horseUuid: String) = transaction {
+        Horses.select { Horses.uuid eq horseUuid }
             .map { Horse(it[Horses.name], it[Horses.height], it[Horses.weight], it[Horses.uuid], it[Horses.birthDate], it[Horses.userUuid]) }
     }
 
@@ -38,8 +38,8 @@ object DatabaseService {
     }
 
     //TODO delete
-    fun getHorses(horseName: String) = transaction {
-        Horses.select { Horses.uuid eq horseName }
+    fun getHorses(horseUuid: String) = transaction {
+        Horses.select { Horses.uuid eq horseUuid }
             .toList()
             .map { Horse(it[Horses.name], it[Horses.height], it[Horses.weight], it[Horses.uuid], it[Horses.birthDate], it[Horses.userUuid]) }
     }
@@ -65,9 +65,9 @@ object DatabaseService {
         }
     }
 
-    fun getAppointments(horseName: String) = transaction {
+    fun getAppointments(horseUuid: String) = transaction {
         (Appointments leftJoin Horses)
-            .select { Horses.uuid eq horseName }
+            .select { Horses.uuid eq horseUuid }
             .toList()
             .map {
                 Appointment(it[Appointments.date],
@@ -96,10 +96,10 @@ object DatabaseService {
         }
     }
 
-    fun getProfessional(userName: String) = transaction {
+    fun getProfessional(userUuid: String) = transaction {
         UserProfessionals
             .join(Professionals, JoinType.RIGHT) { UserProfessionals.proUuid eq Professionals.uuid }
-            .select { UserProfessionals.userUuid eq userName }
+            .select { UserProfessionals.userUuid eq userUuid }
             .toList()
             .map {
                 Professional(
@@ -108,5 +108,26 @@ object DatabaseService {
                     it[Professionals.lastName],
                     it[Professionals.profession])
             }
+    }
+
+    fun insertUserProfessional(usrUuid: String, professional: Professional) = transaction {
+        Professionals.insert {
+            it[uuid] = professional.uuid
+            it[firstName] = professional.firstName
+            it[lastName] = professional.lastName
+            it[profession] = professional.profession
+        }
+        UserProfessionals.insert {
+            it[proUuid] = professional.uuid
+            it[userUuid] = usrUuid
+        }
+    }
+
+    fun updateProfessional(updatedProfessional: Professional) = transaction {
+        Professionals.update({ Professionals.uuid eq updatedProfessional.uuid }) {
+            it[firstName] = updatedProfessional.firstName
+            it[lastName] = updatedProfessional.lastName
+            it[profession] = updatedProfessional.profession
+        }
     }
 }
