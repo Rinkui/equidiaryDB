@@ -12,9 +12,12 @@ import equidiaryDB.services.HorseService
 import equidiaryDB.services.ProfessionalsService
 import equidiaryDB.services.UserService
 import io.javalin.Javalin
-import io.javalin.apibuilder.ApiBuilder.*
+import io.javalin.apibuilder.ApiBuilder.get
+import io.javalin.apibuilder.ApiBuilder.path
+import io.javalin.apibuilder.ApiBuilder.post
+import io.javalin.apibuilder.ApiBuilder.put
 import io.javalin.http.ForbiddenResponse
-import io.javalin.plugin.json.JavalinJackson
+import io.javalin.json.JavalinJackson
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.flywaydb.core.Flyway
