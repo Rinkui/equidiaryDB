@@ -1,7 +1,7 @@
 plugins {
-    id "nebula.ospackage" version "8.0.3"
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
-    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
+//    id "nebula.ospackage" version "8.0.3"
+//    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.10'
 }
 
 group 'equidiaryDB'
@@ -11,34 +11,26 @@ repositories {
     mavenCentral()
 }
 
-buildRpm {
-    packageName 'equidiaryDB'
-    version '0.1'
-    arch X86_64
-    os LINUX
-
-    into '/opt/equidiaryDB'
-
-    from(shadowJar.outputs.files)
-
-    from('config/config.properties') {
-        into 'config'
-    }
-}
+//buildRpm {
+//    packageName 'equidiaryDB'
+//    version '0.1'
+//    arch X86_64
+//    os LINUX
+//
+//    into '/opt/equidiaryDB'
+//
+//    from(shadowJar.outputs.files)
+//
+//    from('config/config.properties') {
+//        into 'config'
+//    }
+//}
 
 test {
     useJUnitPlatform()
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.10'
     implementation fileTree(dir: "lib", includes: ['*.jar'])
     implementation 'io.javalin:javalin:5.4.2'
     implementation group: 'org.apache.commons', name: 'commons-io', version: '1.3.2'
@@ -49,15 +41,14 @@ dependencies {
     implementation 'org.jetbrains.exposed:exposed-dao:0.40.1'
     implementation 'org.jetbrains.exposed:exposed-jdbc:0.40.1'
     implementation 'org.jetbrains.exposed:exposed-java-time:0.40.1'
-    implementation group: 'com.h2database', name: 'h2', version: '1.4.197'
+    implementation group: 'com.h2database', name: 'h2', version: '1.4.198'
     implementation('org.postgresql:postgresql:42.5.4')
-    runtimeOnly group: 'com.natpryce', name: 'konfig', version: '1.4.0.0'
+    runtimeOnly group: 'com.natpryce', name: 'konfig', version: '1.6.10.0'
     implementation group: 'org.json', name: 'json', version: '20230227'
-    implementation group: 'com.mashape.unirest', name: 'unirest-java', version: '1.3.1'
+    testImplementation group: 'com.mashape.unirest', name: 'unirest-java', version: '1.3.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.2'
-    implementation group: 'com.h2database', name: 'h2', version: '1.3.148'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.2'
